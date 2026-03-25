@@ -1,0 +1,44 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Prism Interconnect Protocol Message",
+  "type": "object",
+  "required": ["protocol", "version", "type", "puzzle", "spectrums", "whitespace"],
+  "properties": {
+    "protocol": { "const": "PIP" },
+    "version": { "pattern": "^0\\.[0-9]+$" },
+    "type": { "const": "prism_message" },
+    "id": { "type": "string", "format": "uuid" },
+    "timestamp": { "type": "string", "format": "date-time" },
+    "sender": { "type": "object" },
+    "recipient": { "type": "object" },
+    "puzzle": {
+      "type": "object",
+      "required": ["text"],
+      "properties": {
+        "text": { "type": "string" },
+        "context": { "type": "string" }
+      }
+    },
+    "spectrums": {
+      "type": "array",
+      "minItems": 3,
+      "items": {
+        "type": "object",
+        "required": ["type", "content"],
+        "properties": {
+          "type": { "type": "string", "enum": ["red", "blue", "purple"] },
+          "name": { "type": "string" },
+          "content": { "type": "string" }
+        }
+      }
+    },
+    "whitespace": {
+      "type": "object",
+      "required": ["content"],
+      "properties": {
+        "content": { "type": "string", "maxLength": 200 }
+      }
+    },
+    "metadata": { "type": "object" }
+  }
+}
