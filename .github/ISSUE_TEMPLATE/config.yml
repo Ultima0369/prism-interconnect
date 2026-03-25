@@ -1,0 +1,14 @@
+blank_issues_enabled: false
+contact_links:
+  - name: 🧠 棱镜协议文档
+    url: https://github.com/Ultima0369/prism-interconnect#readme
+    about: 查看完整文档和快速开始指南
+  - name: 🔥 GitHub Discussions
+    url: https://github.com/Ultima0369/prism-interconnect/discussions
+    about: 加入火堆旁的哲学和技术讨论
+  - name: 📚 开发者指南
+    url: https://github.com/Ultima0369/prism-interconnect/blob/main/DEVELOPER_GUIDE.md
+    about: 开发者贡献和代码规范指南
+  - name: 🤝 行为准则
+    url: https://github.com/Ultima0369/prism-interconnect/blob/main/CODE_OF_CONDUCT.md
+    about: 社区行为准则和参与规范

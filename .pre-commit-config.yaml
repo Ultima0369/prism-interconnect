@@ -1,0 +1,243 @@
+# 🎯 棱镜协议预提交钩子配置
+# 在提交代码前自动运行代码质量检查
+
+repos:
+  # ==================== Python代码格式化 ====================
+  - repo: https://github.com/psf/black
+    rev: 23.12.1
+    hooks:
+      - id: black
+        name: ⚫ Black代码格式化
+        description: 自动格式化Python代码
+        language_version: python3.11
+        args: ["--line-length=100", "--target-version=py311"]
+        files: ^implementations/python/
+
+  - repo: https://github.com/pycqa/isort
+    rev: 5.13.2
+    hooks:
+      - id: isort
+        name: 📝 isort导入排序
+        description: 自动排序Python导入
+        args: ["--profile=black", "--line-length=100"]
+        files: ^implementations/python/
+
+  # ==================== Python代码质量检查 ====================
+  - repo: https://github.com/pycqa/flake8
+    rev: 6.1.0
+    hooks:
+      - id: flake8
+        name: 🧹 flake8代码风格检查
+        description: 检查Python代码风格
+        args: ["--max-line-length=100", "--extend-ignore=E203,W503"]
+        files: ^implementations/python/
+        additional_dependencies: ["flake8-docstrings"]
+
+  - repo: https://github.com/pre-commit/mirrors-mypy
+    rev: v1.7.1
+    hooks:
+      - id: mypy
+        name: 🔍 mypy类型检查
+        description: 静态类型检查
+        args: ["--strict", "--ignore-missing-imports"]
+        files: ^implementations/python/
+        additional_dependencies: ["types-requests"]
+
+  # ==================== 通用代码质量检查 ====================
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.5.0
+    hooks:
+      - id: trailing-whitespace
+        name: 🧹 删除行尾空格
+        description: 删除行尾多余空格
+        args: [--markdown-linebreak-ext=md]
+
+      - id: end-of-file-fixer
+        name: 📄 文件末尾换行
+        description: 确保文件以换行符结尾
+
+      - id: check-yaml
+        name: 📋 YAML语法检查
+        description: 检查YAML文件语法
+
+      - id: check-toml
+        name: 📋 TOML语法检查
+        description: 检查TOML文件语法
+
+      - id: check-json
+        name: 📋 JSON语法检查
+        description: 检查JSON文件语法
+
+      - id: check-added-large-files
+        name: 📏 检查大文件
+        description: 防止提交大文件
+        args: ["--maxkb=1024"]
+
+      - id: check-merge-conflict
+        name: 🔀 检查合并冲突
+        description: 检查文件中的合并冲突标记
+
+      - id: check-case-conflict
+        name: 🔠 检查大小写冲突
+        description: 检查文件名大小写冲突
+
+      - id: detect-private-key
+        name: 🔑 检测私钥
+        description: 检测并阻止提交私钥
+
+  # ==================== Markdown文档检查 ====================
+  - repo: https://github.com/igorshubovych/markdownlint-cli
+    rev: v0.37.0
+    hooks:
+      - id: markdownlint
+        name: 📝 Markdown格式检查
+        description: 检查Markdown文档格式
+        args: ["--config", ".markdownlint.json"]
+        files: \.md$
+
+  # ==================== 安全代码检查 ====================
+  - repo: https://github.com/PyCQA/bandit
+    rev: 1.7.6
+    hooks:
+      - id: bandit
+        name: 🔒 Bandit安全扫描
+        description: 安全漏洞扫描
+        args: ["-c", "pyproject.toml"]
+        files: ^implementations/python/
+        exclude: ^implementations/python/tests/
+
+  # ==================== 依赖安全检查 ====================
+  - repo: https://github.com/pycqa/bandit
+    rev: 1.7.6
+    hooks:
+      - id: bandit
+        name: 📦 依赖漏洞检查
+        description: 检查依赖中的安全漏洞
+        args: ["-r", "implementations/python/", "-ll"]
+        files: ^implementations/python/requirements.*\.txt$
+
+  # ==================== 提交消息检查 ====================
+  - repo: https://github.com/alessandrojcm/commitlint-pre-commit-hook
+    rev: v9.5.0
+    hooks:
+      - id: commitlint
+        name: 📝 提交消息格式检查
+        description: 检查提交消息格式
+        stages: [commit-msg]
+        args: ["--config", ".commitlintrc.json"]
+
+  # ==================== 许可证头检查 ====================
+  - repo: https://github.com/Lucas-C/pre-commit-hooks
+    rev: v1.5.1
+    hooks:
+      - id: insert-license
+        name: 📄 插入许可证头
+        description: 为代码文件添加许可证头
+        files: \.py$
+        args: ["--license-filepath", "LICENSE_HEADER", "--comment-style=#"]
+
+# ==================== 配置说明 ====================
+
+# 安装预提交钩子
+# pip install pre-commit
+# pre-commit install
+
+# 安装所有钩子
+# pre-commit install --hook-type pre-commit --hook-type commit-msg
+
+# 手动运行所有钩子
+# pre-commit run --all-files
+
+# 跳过预提交钩子
+# git commit --no-verify
+
+# 更新钩子版本
+# pre-commit autoupdate
+
+# ==================== 钩子执行顺序 ====================
+# 1. 通用检查（空格、文件格式等）
+# 2. 安全检查（私钥、漏洞等）
+# 3. 代码格式化（black, isort）
+# 4. 代码质量检查（flake8, mypy）
+# 5. 文档检查（markdownlint）
+# 6. 提交消息检查（commitlint）
+
+# ==================== 自定义配置 ====================
+
+# 跳过特定检查
+# SKIP=flake8 git commit -m "message"
+
+# 仅运行特定钩子
+# pre-commit run black --all-files
+
+# 开发环境配置
+default_language_version:
+  python: python3.11
+
+# 排除文件
+exclude: |
+  (?x)^(
+    .*\.min\.js$|
+    .*\.min\.css$|
+    .*\.map$|
+    .*\.ico$|
+    .*\.png$|
+    .*\.jpg$|
+    .*\.gif$|
+    .*\.svg$|
+    .*\.pdf$|
+    .*\.zip$|
+    .*\.tar\.gz$|
+    .*\.pyc$|
+    __pycache__/|
+    \.git/|
+    \.venv/|
+    venv/|
+    node_modules/|
+    dist/|
+    build/|
+    \.eggs/|
+    \.tox/|
+    \.pytest_cache/|
+    \.mypy_cache/|
+    \.coverage|
+    htmlcov/|
+    \.DS_Store
+  )$
+
+# ==================== 性能优化 ====================
+
+# 并行执行
+# pre-commit run --all-files --parallel
+
+# 缓存结果
+# pre-commit run --all-files --show-diff-on-failure
+
+# 仅检查暂存文件
+# pre-commit run
+
+# ==================== 集成说明 ====================
+
+# CI/CD集成
+# 在CI/CD流水线中添加：
+# - name: Run pre-commit
+#   run: pre-commit run --all-files
+
+# 编辑器集成
+# VS Code: 安装pre-commit扩展
+# PyCharm: 配置外部工具
+# Vim/Neovim: 配置自动命令
+
+# ==================== 故障排除 ====================
+
+# 钩子执行失败
+# pre-commit run --all-files --verbose
+
+# 清除缓存
+# pre-commit clean
+
+# 跳过特定文件
+# 在文件中添加: # noqa
+
+# 临时禁用
+# 在提交时使用: --no-verify
