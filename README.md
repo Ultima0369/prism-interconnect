@@ -1,7 +1,17 @@
-# 🔮 棱镜互联协议 (Prism Interconnect Protocol, PIP)
+# 🧠 棱镜互联协议 (Prism Interconnect Protocol, PIP)
+## 从技术工具到认知镜子的思想旅程
 
 > *一题，多面，映照心智的色谱。*  
 > *这里没有说教。无非是作者比多数学者干过更多蠢事，对自心有过一番勇猛的直视。*
+> 
+> 基于真正的科学精神以及"法尚应舍何况非法"，下文虽然用了真理这样的辞藻。  
+> 一切人为构建内容，均属于人类为了生存与繁荣而创造的工具，非世界本身。  
+> 恰如人类创造了数学，正圆，直线……，但显然，自然界目前为止，没有发现绝对直线与正圆。  
+> 真实的世界实情，充满了不规则，复杂，而人类心中的条理，头脑的思路，各种标准，是生存的必须，却也因此简化过程错过了重要信息。
+> 
+> 天大，地大，人大，是不容辩驳的实情，自然律虽然也属于人类最高认知，却有极高置信度，经得起严格的检验。  
+> 天地有大美而不言，四时有明法而不议，万物有成理而不说。  
+> 注意力的散乱，人生除了酸楚，还有众多真善美与妙，上班途中的鲜花正娇艳，如果从未注意到花，此生，鲜花如同没有存在过。
 
 [![License: CC BY-NC 4.0](https://img.shields.io/badge/License-CC%20BY--NC%204.0-lightgrey.svg)](https://creativecommons.org/licenses/by-nc/4.0/)
 [![GitHub stars](https://img.shields.io/github/stars/Ultima0369/prism-interconnect?style=social)]()
