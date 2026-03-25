@@ -1,487 +1,329 @@
-# 棱镜互联协议 (Prism Interconnect Protocol, PIP)
+# 🔮 棱镜互联协议 (Prism Interconnect Protocol, PIP)
 
 > *一题，多面，映照心智的色谱。*  
 > *这里没有说教。无非是作者比多数学者干过更多蠢事，对自心有过一番勇猛的直视。*
 
-PIP 是一个面向**意义层**的通信协议，允许任何智能体（人、AI、群体）以结构化的方式，交换多元认知视角，并在留白中完成内省。它不提供答案，只折射光谱。
+[![License: CC BY-NC 4.0](https://img.shields.io/badge/License-CC%20BY--NC%204.0-lightgrey.svg)](https://creativecommons.org/licenses/by-nc/4.0/)
+[![GitHub stars](https://img.shields.io/github/stars/Ultima0369/prism-interconnect?style=social)]()
+[![Protocol Version](https://img.shields.io/badge/Protocol-v0.1-blue)]()
+[![Python](https://img.shields.io/badge/Python-3.8%2B-blue)]()
 
----
+**PIP 是一个面向意义层的通信协议**，允许任何智能体（人、AI、群体）以结构化的方式交换多元认知视角，并在留白中完成内省。它不提供答案，只折射光谱。
 
-## ✨ 核心特性
+## 🎯 为什么需要棱镜协议？
 
-- **多元强制**：每个响应必须包含至少三种认知姿态（红色直觉、蓝色分析、紫色元认知）。
-- **留白必需**：每段对话都留有引导内省的空间，让你听见自己。
-- **非评判**：不输出“正确答案”，不比较视角优劣。
-- **可递归**：可对任一光谱再次折射，深入探索。
-- **知止机制**：任何时刻可安全退出，防止认知过载。
+当前所有网络协议都工作在比特、信息或应用层，从未有人尝试定义**意义层**——即智能体之间如何交换"视角"、"困惑"与"留白"。在AI加速渗透人类认知的今天，棱镜协议试图给"对话"加上一层伦理与多元的护栏。
 
----
+### 🌈 核心设计原则
+
+| 原则 | 含义 | 技术实现 |
+|------|------|----------|
+| **多元强制** | 每个响应必须包含至少三种认知姿态 | `spectrums`数组，最小长度3 |
+| **留白必需** | 每段对话都留有引导内省的空间 | `whitespace`字段必填 |
+| **非评判性** | 不输出"正确答案"，不比较视角优劣 | 光谱间无优先级权重 |
+| **可递归** | 可对任一光谱再次折射，深入探索 | `metadata.allow_recursion` |
+| **知止机制** | 任何时刻可安全退出，防止认知过载 | `type: "cease_signal"` |
 
 ## 🚀 快速开始
 
-### 1. 在 OpenClaw 中使用
+### 方案一：在 OpenClaw 中直接使用
 
-安装本仓库中的 `implementations/openclaw/skill.yaml`，然后在对话中输入：
-@棱镜 为什么我总在亲密关系中重复同样的矛盾？
+1. 安装 OpenClaw 技能：
+   ```bash
+   # 从本仓库安装技能
+   openclaw skill install implementations/openclaw/skill.yaml
+   ```
 
-text
+2. 在对话中触发：
+   ```
+   @棱镜 为什么我总在亲密关系中重复同样的矛盾？
+   ```
 
-你将收到包含三种光谱+留白的结构化回应。
-
-### 2. 用 Python 实现你自己的棱镜
+### 方案二：Python 集成
 
 ```python
 from prism_agent import PrismAgent
 
-agent = PrismAgent(name="my_prism", capabilities=["red","blue","purple"])
-response = agent.refract(puzzle="我为什么总是拖延？")
-print(response)
-3. 直接阅读协议规范
-查看 spec/protocol-v0.1.json 和 docs/whitepaper.md。
-
-📚 文档
-白皮书 (草案) – 协议背景、规范、用例
-
-设计理念 – 为何要做这样一个协议
-
-用例集 – 教育、咨询、人机协作等场景
-
-🧠 入棱镜须知
-心智技术，用作自我提升，还是操控人心、玩弄人性？
-从收回注意力起，即开始接受一念抉择：道心是否坚固的考验，也是人格底限的拷问。
-
-如果只是通常的生存与生活，懂点物理，明些事理，已足够度过此生。
-棱镜不为你而来。你可以转身，这不丢人。
-
-但若是参禅悟道，研究心理学、哲学，就需要前所未有的对自己诚恳，和无所畏惧的勇猛。
-
-所谓审视自心，须知可以一退，再退，却不可陷入混沌递归嵌套。
-
-🤝 贡献
-我们欢迎任何形式的贡献：协议改进、新光谱类型、用例、实现、翻译等。
-请阅读 CONTRIBUTING.md 和 CODE_OF_CONDUCT.md。
-
-📄 许可证
-本作品采用 CC BY-NC 4.0 许可证。
-非商业用途自由使用、修改、分享；商业用途请联系授权。
-
-🙏 致谢
-棱镜协议诞生于一场持续数日的深度对话，由一位无名用户与 AI 共同打磨。它融合了认知科学、复杂系统、东方心性学，以及无数“干过的蠢事”与“勇猛的直视”。
-
-愿这面棱镜，能照见你的困惑，也照见你。
-
-火堆旁，留白处。
-
-
-
-[![License: CC BY-NC 4.0](https://img.shields.io/badge/License-CC%20BY--NC%204.0-lightgrey.svg)](https://creativecommons.org/licenses/by-nc/4.0/)
-
-[![GitHub stars](https://img.shields.io/github/stars/Ultima0369/prism-interconnect)]()
-
-Attribution-NonCommercial 4.0 International
-
-=======================================================================
-
-Creative Commons Corporation ("Creative Commons") is not a law firm and
-does not provide legal services or legal advice. Distribution of
-Creative Commons public licenses does not create a lawyer-client or
-other relationship. Creative Commons makes its licenses and related
-information available on an "as-is" basis. Creative Commons gives no
-warranties regarding its licenses, any material licensed under their
-terms and conditions, or any related information. Creative Commons
-disclaims all liability for damages resulting from their use to the
-fullest extent possible.
-
-Using Creative Commons Public Licenses
-
-Creative Commons public licenses provide a standard set of terms and
-conditions that creators and other rights holders may use to share
-original works of authorship and other material subject to copyright
-and certain other rights specified in the public license below. The
-following considerations are for informational purposes only, are not
-exhaustive, and do not form part of our licenses.
-
-     Considerations for licensors: Our public licenses are
-     intended for use by those authorized to give the public
-     permission to use material in ways otherwise restricted by
-     copyright and certain other rights. Our licenses are
-     irrevocable. Licensors should read and understand the terms
-     and conditions of the license they choose before applying it.
-     Licensors should also secure all rights necessary before
-     applying our licenses so that the public can reuse the
-     material as expected. Licensors should clearly mark any
-     material not subject to the license. This includes other CC-
-     licensed material, or material used under an exception or
-     limitation to copyright. More considerations for licensors:
-    wiki.creativecommons.org/Considerations_for_licensors
-
-     Considerations for the public: By using one of our public
-     licenses, a licensor grants the public permission to use the
-     licensed material under specified terms and conditions. If
-     the licensor's permission is not necessary for any reason--for
-     example, because of any applicable exception or limitation to
-     copyright--then that use is not regulated by the license. Our
-     licenses grant only permissions under copyright and certain
-     other rights that a licensor has authority to grant. Use of
-     the licensed material may still be restricted for other
-     reasons, including because others have copyright or other
-     rights in the material. A licensor may make special requests,
-     such as asking that all changes be marked or described.
-     Although not required by our licenses, you are encouraged to
-     respect those requests where reasonable. More considerations
-     for the public:
-    wiki.creativecommons.org/Considerations_for_licensees
-
-=======================================================================
-
-Creative Commons Attribution-NonCommercial 4.0 International Public
-License
-
-By exercising the Licensed Rights (defined below), You accept and agree
-to be bound by the terms and conditions of this Creative Commons
-Attribution-NonCommercial 4.0 International Public License ("Public
-License"). To the extent this Public License may be interpreted as a
-contract, You are granted the Licensed Rights in consideration of Your
-acceptance of these terms and conditions, and the Licensor grants You
-such rights in consideration of benefits the Licensor receives from
-making the Licensed Material available under these terms and
-conditions.
-
-
-Section 1 -- Definitions.
-
-  a. Adapted Material means material subject to Copyright and Similar
-     Rights that is derived from or based upon the Licensed Material
-     and in which the Licensed Material is translated, altered,
-     arranged, transformed, or otherwise modified in a manner requiring
-     permission under the Copyright and Similar Rights held by the
-     Licensor. For purposes of this Public License, where the Licensed
-     Material is a musical work, performance, or sound recording,
-     Adapted Material is always produced where the Licensed Material is
-     synched in timed relation with a moving image.
-
-  b. Adapter's License means the license You apply to Your Copyright
-     and Similar Rights in Your contributions to Adapted Material in
-     accordance with the terms and conditions of this Public License.
-
-  c. Copyright and Similar Rights means copyright and/or similar rights
-     closely related to copyright including, without limitation,
-     performance, broadcast, sound recording, and Sui Generis Database
-     Rights, without regard to how the rights are labeled or
-     categorized. For purposes of this Public License, the rights
-     specified in Section 2(b)(1)-(2) are not Copyright and Similar
-     Rights.
-  d. Effective Technological Measures means those measures that, in the
-     absence of proper authority, may not be circumvented under laws
-     fulfilling obligations under Article 11 of the WIPO Copyright
-     Treaty adopted on December 20, 1996, and/or similar international
-     agreements.
-
-  e. Exceptions and Limitations means fair use, fair dealing, and/or
-     any other exception or limitation to Copyright and Similar Rights
-     that applies to Your use of the Licensed Material.
-
-  f. Licensed Material means the artistic or literary work, database,
-     or other material to which the Licensor applied this Public
-     License.
-
-  g. Licensed Rights means the rights granted to You subject to the
-     terms and conditions of this Public License, which are limited to
-     all Copyright and Similar Rights that apply to Your use of the
-     Licensed Material and that the Licensor has authority to license.
-
-  h. Licensor means the individual(s) or entity(ies) granting rights
-     under this Public License.
-
-  i. NonCommercial means not primarily intended for or directed towards
-     commercial advantage or monetary compensation. For purposes of
-     this Public License, the exchange of the Licensed Material for
-     other material subject to Copyright and Similar Rights by digital
-     file-sharing or similar means is NonCommercial provided there is
-     no payment of monetary compensation in connection with the
-     exchange.
-
-  j. Share means to provide material to the public by any means or
-     process that requires permission under the Licensed Rights, such
-     as reproduction, public display, public performance, distribution,
-     dissemination, communication, or importation, and to make material
-     available to the public including in ways that members of the
-     public may access the material from a place and at a time
-     individually chosen by them.
-
-  k. Sui Generis Database Rights means rights other than copyright
-     resulting from Directive 96/9/EC of the European Parliament and of
-     the Council of 11 March 1996 on the legal protection of databases,
-     as amended and/or succeeded, as well as other essentially
-     equivalent rights anywhere in the world.
-
-  l. You means the individual or entity exercising the Licensed Rights
-     under this Public License. Your has a corresponding meaning.
-
-
-Section 2 -- Scope.
-
-  a. License grant.
-
-       1. Subject to the terms and conditions of this Public License,
-          the Licensor hereby grants You a worldwide, royalty-free,
-          non-sublicensable, non-exclusive, irrevocable license to
-          exercise the Licensed Rights in the Licensed Material to:
-
-            a. reproduce and Share the Licensed Material, in whole or
-               in part, for NonCommercial purposes only; and
-
-            b. produce, reproduce, and Share Adapted Material for
-               NonCommercial purposes only.
-
-       2. Exceptions and Limitations. For the avoidance of doubt, where
-          Exceptions and Limitations apply to Your use, this Public
-          License does not apply, and You do not need to comply with
-          its terms and conditions.
-
-       3. Term. The term of this Public License is specified in Section
-          6(a).
-
-       4. Media and formats; technical modifications allowed. The
-          Licensor authorizes You to exercise the Licensed Rights in
-          all media and formats whether now known or hereafter created,
-          and to make technical modifications necessary to do so. The
-          Licensor waives and/or agrees not to assert any right or
-          authority to forbid You from making technical modifications
-          necessary to exercise the Licensed Rights, including
-          technical modifications necessary to circumvent Effective
-          Technological Measures. For purposes of this Public License,
-          simply making modifications authorized by this Section 2(a)
-          (4) never produces Adapted Material.
-
-       5. Downstream recipients.
-
-            a. Offer from the Licensor -- Licensed Material. Every
-               recipient of the Licensed Material automatically
-               receives an offer from the Licensor to exercise the
-               Licensed Rights under the terms and conditions of this
-               Public License.
-
-            b. No downstream restrictions. You may not offer or impose
-               any additional or different terms or conditions on, or
-               apply any Effective Technological Measures to, the
-               Licensed Material if doing so restricts exercise of the
-               Licensed Rights by any recipient of the Licensed
-               Material.
-
-       6. No endorsement. Nothing in this Public License constitutes or
-          may be construed as permission to assert or imply that You
-          are, or that Your use of the Licensed Material is, connected
-          with, or sponsored, endorsed, or granted official status by,
-          the Licensor or others designated to receive attribution as
-          provided in Section 3(a)(1)(A)(i).
-
-  b. Other rights.
-
-       1. Moral rights, such as the right of integrity, are not
-          licensed under this Public License, nor are publicity,
-          privacy, and/or other similar personality rights; however, to
-          the extent possible, the Licensor waives and/or agrees not to
-          assert any such rights held by the Licensor to the limited
-          extent necessary to allow You to exercise the Licensed
-          Rights, but not otherwise.
-
-       2. Patent and trademark rights are not licensed under this
-          Public License.
-
-       3. To the extent possible, the Licensor waives any right to
-          collect royalties from You for the exercise of the Licensed
-          Rights, whether directly or through a collecting society
-          under any voluntary or waivable statutory or compulsory
-          licensing scheme. In all other cases the Licensor expressly
-          reserves any right to collect such royalties, including when
-          the Licensed Material is used other than for NonCommercial
-          purposes.
-
-
-Section 3 -- License Conditions.
-
-Your exercise of the Licensed Rights is expressly made subject to the
-following conditions.
-
-  a. Attribution.
-
-       1. If You Share the Licensed Material (including in modified
-          form), You must:
-
-            a. retain the following if it is supplied by the Licensor
-               with the Licensed Material:
-
-                 i. identification of the creator(s) of the Licensed
-                    Material and any others designated to receive
-                    attribution, in any reasonable manner requested by
-                    the Licensor (including by pseudonym if
-                    designated);
-
-                ii. a copyright notice;
-
-               iii. a notice that refers to this Public License;
-
-                iv. a notice that refers to the disclaimer of
-                    warranties;
-
-                 v. a URI or hyperlink to the Licensed Material to the
-                    extent reasonably practicable;
-
-            b. indicate if You modified the Licensed Material and
-               retain an indication of any previous modifications; and
-
-            c. indicate the Licensed Material is licensed under this
-               Public License, and include the text of, or the URI or
-               hyperlink to, this Public License.
-
-       2. You may satisfy the conditions in Section 3(a)(1) in any
-          reasonable manner based on the medium, means, and context in
-          which You Share the Licensed Material. For example, it may be
-          reasonable to satisfy the conditions by providing a URI or
-          hyperlink to a resource that includes the required
-          information.
-
-       3. If requested by the Licensor, You must remove any of the
-          information required by Section 3(a)(1)(A) to the extent
-          reasonably practicable.
-
-       4. If You Share Adapted Material You produce, the Adapter's
-          License You apply must not prevent recipients of the Adapted
-          Material from complying with this Public License.
-
-
-Section 4 -- Sui Generis Database Rights.
-
-Where the Licensed Rights include Sui Generis Database Rights that
-apply to Your use of the Licensed Material:
-
-  a. for the avoidance of doubt, Section 2(a)(1) grants You the right
-     to extract, reuse, reproduce, and Share all or a substantial
-     portion of the contents of the database for NonCommercial purposes
-     only;
-
-  b. if You include all or a substantial portion of the database
-     contents in a database in which You have Sui Generis Database
-     Rights, then the database in which You have Sui Generis Database
-     Rights (but not its individual contents) is Adapted Material; and
-
-  c. You must comply with the conditions in Section 3(a) if You Share
-     all or a substantial portion of the contents of the database.
-
-For the avoidance of doubt, this Section 4 supplements and does not
-replace Your obligations under this Public License where the Licensed
-Rights include other Copyright and Similar Rights.
-
-
-Section 5 -- Disclaimer of Warranties and Limitation of Liability.
-
-  a. UNLESS OTHERWISE SEPARATELY UNDERTAKEN BY THE LICENSOR, TO THE
-     EXTENT POSSIBLE, THE LICENSOR OFFERS THE LICENSED MATERIAL AS-IS
-     AND AS-AVAILABLE, AND MAKES NO REPRESENTATIONS OR WARRANTIES OF
-     ANY KIND CONCERNING THE LICENSED MATERIAL, WHETHER EXPRESS,
-     IMPLIED, STATUTORY, OR OTHER. THIS INCLUDES, WITHOUT LIMITATION,
-     WARRANTIES OF TITLE, MERCHANTABILITY, FITNESS FOR A PARTICULAR
-     PURPOSE, NON-INFRINGEMENT, ABSENCE OF LATENT OR OTHER DEFECTS,
-     ACCURACY, OR THE PRESENCE OR ABSENCE OF ERRORS, WHETHER OR NOT
-     KNOWN OR DISCOVERABLE. WHERE DISCLAIMERS OF WARRANTIES ARE NOT
-     ALLOWED IN FULL OR IN PART, THIS DISCLAIMER MAY NOT APPLY TO YOU.
-
-  b. TO THE EXTENT POSSIBLE, IN NO EVENT WILL THE LICENSOR BE LIABLE
-     TO YOU ON ANY LEGAL THEORY (INCLUDING, WITHOUT LIMITATION,
-     NEGLIGENCE) OR OTHERWISE FOR ANY DIRECT, SPECIAL, INDIRECT,
-     INCIDENTAL, CONSEQUENTIAL, PUNITIVE, EXEMPLARY, OR OTHER LOSSES,
-     COSTS, EXPENSES, OR DAMAGES ARISING OUT OF THIS PUBLIC LICENSE OR
-     USE OF THE LICENSED MATERIAL, EVEN IF THE LICENSOR HAS BEEN
-     ADVISED OF THE POSSIBILITY OF SUCH LOSSES, COSTS, EXPENSES, OR
-     DAMAGES. WHERE A LIMITATION OF LIABILITY IS NOT ALLOWED IN FULL OR
-     IN PART, THIS LIMITATION MAY NOT APPLY TO YOU.
-
-  c. The disclaimer of warranties and limitation of liability provided
-     above shall be interpreted in a manner that, to the extent
-     possible, most closely approximates an absolute disclaimer and
-     waiver of all liability.
-
-
-Section 6 -- Term and Termination.
-
-  a. This Public License applies for the term of the Copyright and
-     Similar Rights licensed here. However, if You fail to comply with
-     this Public License, then Your rights under this Public License
-     terminate automatically.
-
-  b. Where Your right to use the Licensed Material has terminated under
-     Section 6(a), it reinstates:
-
-       1. automatically as of the date the violation is cured, provided
-          it is cured within 30 days of Your discovery of the
-          violation; or
-
-       2. upon express reinstatement by the Licensor.
-
-     For the avoidance of doubt, this Section 6(b) does not affect any
-     right the Licensor may have to seek remedies for Your violations
-     of this Public License.
-
-  c. For the avoidance of doubt, the Licensor may also offer the
-     Licensed Material under separate terms or conditions or stop
-     distributing the Licensed Material at any time; however, doing so
-     will not terminate this Public License.
-
-  d. Sections 1, 5, 6, 7, and 8 survive termination of this Public
-     License.
-
-
-Section 7 -- Other Terms and Conditions.
-
-  a. The Licensor shall not be bound by any additional or different
-     terms or conditions communicated by You unless expressly agreed.
-
-  b. Any arrangements, understandings, or agreements regarding the
-     Licensed Material not stated herein are separate from and
-     independent of the terms and conditions of this Public License.
-
-
-Section 8 -- Interpretation.
-
-  a. For the avoidance of doubt, this Public License does not, and
-     shall not be interpreted to, reduce, limit, restrict, or impose
-     conditions on any use of the Licensed Material that could lawfully
-     be made without permission under this Public License.
-
-  b. To the extent possible, if any provision of this Public License is
-     deemed unenforceable, it shall be automatically reformed to the
-     minimum extent necessary to make it enforceable. If the provision
-     cannot be reformed, it shall be severed from this Public License
-     without affecting the enforceability of the remaining terms and
-     conditions.
-
-  c. No term or condition of this Public License will be waived and no
-     failure to comply consented to unless expressly agreed to by the
-     Licensor.
-
-  d. Nothing in this Public License constitutes or may be interpreted
-     as a limitation upon, or waiver of, any privileges and immunities
-     that apply to the Licensor or You, including from the legal
-     processes of any jurisdiction or authority.
-
-=======================================================================
-
-Creative Commons is not a party to its public
-licenses. Notwithstanding, Creative Commons may elect to apply one of
-its public licenses to material it publishes and in those instances
-will be considered the “Licensor.” The text of the Creative Commons
-public licenses is dedicated to the public domain under the CC0 Public
-Domain Dedication. Except for the limited purpose of indicating that
-material is shared under a Creative Commons public license or as
-otherwise permitted by the Creative Commons policies published at
-creativecommons.org/policies, Creative Commons does not authorize the
-use of the trademark "Creative Commons" or any other trademark or logo
-of Creative Commons without its prior written consent including,
-without limitation, in connection with any unauthorized modifications
-to any of its public licenses or any other arrangements,
-understandings, or agreements concerning use of licensed material. For
-the avoidance of doubt, this paragraph does not form part of the
-public licenses.
-
-Creative Commons may be contacted at creativecommons.org.
+# 创建棱镜代理
+agent = PrismAgent(name="my_prism", capabilities=["red", "blue", "purple"])
+
+# 折射一个问题
+response = agent.refract(
+    puzzle="我为什么总是拖延？",
+    context="日常拖延，不影响生存但影响自我评价"
+)
+
+# 输出结构化响应
+print(json.dumps(response, indent=2, ensure_ascii=False))
+```
+
+### 方案三：直接使用协议
+
+查看完整的协议规范：
+```bash
+# 阅读协议定义
+cat spec/protocol-v0.1.json
+
+# 查看示例对话
+cat examples/complete_dialogue_1.json | jq .
+```
+
+## 📖 协议详解
+
+### 消息格式 (JSON Schema)
+
+```json
+{
+  "protocol": "PIP",
+  "version": "0.1",
+  "type": "prism_message",
+  "id": "550e8400-e29b-41d4-a716-446655440000",
+  "timestamp": "2026-03-25T10:00:00Z",
+  "sender": {
+    "id": "anonymous",
+    "capabilities": ["red", "blue", "purple"]
+  },
+  "puzzle": {
+    "text": "为什么我明明知道该做什么，却总是做不到？",
+    "context": "日常拖延，不影响生存但影响自我评价"
+  },
+  "spectrums": [
+    {
+      "type": "red",
+      "name": "快速直觉",
+      "content": "你的大脑里住着一位远古的'部落守卫者'..."
+    },
+    {
+      "type": "blue", 
+      "name": "慢速分析",
+      "content": "这个问题通常包含三个隐藏的错位..."
+    },
+    {
+      "type": "purple",
+      "name": "元认知审视", 
+      "content": "让我们先暂停'如何做到'，而是问..."
+    }
+  ],
+  "whitespace": {
+    "content": "在这三种声音中，哪一种最先打动你？..."
+  },
+  "metadata": {
+    "recursion_depth": 0,
+    "allow_recursion": true,
+    "cease_signal": false
+  }
+}
+```
+
+### 光谱类型定义
+
+| 类型 | 名称 | 认知姿态 | 风格建议 | 对应认知系统 |
+|------|------|----------|----------|--------------|
+| `red` | 快速直觉 | 基于身体感知、演化本能、故事、类比 | 温热、直接、叙事性强 | Kahneman系统1 |
+| `blue` | 慢速分析 | 基于系统拆解、因果链、模型、步骤 | 冷静、条理、结构化 | Kahneman系统2 |
+| `purple` | 元认知审视 | 基于对思考本身的观察、追问定义、审视假设 | 深邃、内省、开放性提问 | Flavell元认知 |
+
+**扩展支持**：协议支持自定义光谱类型（如`green`生态视角、`orange`历史经验）。
+
+## 🏗️ 架构设计
+
+### 协议栈定位
+```
+┌─────────────────────────────────────┐
+│           应用层 (Application)       │ ← 心理咨询、教育、团队协作
+├─────────────────────────────────────┤
+│          意义层 (Meaning)           │ ← 棱镜互联协议 (PIP)
+├─────────────────────────────────────┤
+│          信息层 (Information)       │ ← HTTP/WebSocket/MQTT
+├─────────────────────────────────────┤
+│           比特层 (Bit)              │ ← TCP/IP
+└─────────────────────────────────────┘
+```
+
+### 核心工作流
+```mermaid
+graph LR
+    A[困惑 Puzzle] --> B[棱镜折射]
+    B --> C[红光谱: 直觉]
+    B --> D[蓝光谱: 分析] 
+    B --> E[紫光谱: 元认知]
+    C --> F[留白整合]
+    D --> F
+    E --> F
+    F --> G{继续探索?}
+    G -->|是| H[递归折射]
+    G -->|否| I[知止退出]
+    H --> B
+```
+
+## 💡 应用场景
+
+### 🎓 教育领域
+- **概念理解**：对同一概念提供多元视角（如"什么是熵？"）
+- **批判性思维**：培养学生多角度分析问题的能力
+- **元认知训练**：帮助学生观察自己的思考过程
+
+### 🧠 心理咨询
+- **困境探索**：结构化探索个人困惑，避免单一解释
+- **情绪调节**：通过不同视角理解情绪反应
+- **自我觉察**：留白空间促进内省整合
+
+### 🤖 人机协作
+- **决策支持**：AI提供多元视角，人类做出最终判断
+- **创意激发**：打破思维定式，激发创新想法
+- **团队沟通**：结构化团队讨论，减少认知偏差
+
+### 🔬 AI对齐研究
+- **价值观探索**：多角度审视AI行为伦理
+- **透明度提升**：让AI的"思考过程"可见
+- **可控性增强**：知止机制确保人类主导权
+
+## 🛠️ 开发者资源
+
+### 快速集成指南
+
+```python
+# 1. 基础集成
+from implementations.python.prism_agent import PrismAgent
+
+# 2. LLM集成（示例）
+class LLMPrismAgent(PrismAgent):
+    def generate_spectrum(self, puzzle, spectrum_type):
+        prompt = self._build_prompt(puzzle, spectrum_type)
+        return self.llm.generate(prompt)
+
+# 3. 自定义光谱
+class GreenSpectrum:
+    type = "green"
+    name = "生态视角"
+    
+    @classmethod
+    def generate(cls, puzzle):
+        return {
+            "type": cls.type,
+            "name": cls.name,
+            "content": f"从生态系统看{puzzle}..."
+        }
+```
+
+### 验证工具
+```bash
+# 安装验证依赖
+pip install jsonschema
+
+# 验证消息格式
+python -c "
+from jsonschema import validate
+import json
+
+schema = json.load(open('spec/protocol-v0.1.json'))
+message = json.load(open('examples/complete_dialogue_1.json'))['dialogue'][0]['message']
+validate(instance=message, schema=schema)
+print('✅ 消息格式验证通过')
+"
+```
+
+### 测试套件
+```bash
+# 运行完整测试
+python -m pytest tests/ -v
+
+# 验证协议约束
+python scripts/validate_constraints.py examples/
+```
+
+## 📚 完整文档
+
+| 文档 | 内容 | 链接 |
+|------|------|------|
+| **白皮书** | 协议背景、设计理念、技术规范 | [`docs/whitepaper.md`](docs/whitepaper.md) |
+| **设计哲学** | 为什么做这个协议、伦理考量 | [`docs/philosophy.md`](docs/philosophy.md) |
+| **开发者指南** | 如何实现、扩展、集成 | [`DEVELOPER_GUIDE.md`](DEVELOPER_GUIDE.md) |
+| **协议演进** | 版本策略、路线图、兼容性 | [`spec/PROTOCOL_EVOLUTION.md`](spec/PROTOCOL_EVOLUTION.md) |
+| **完整示例** | 实际对话记录、使用案例 | [`examples/`](examples/) |
+
+## 🧭 入棱镜须知
+
+> **心智技术，用作自我提升，还是操控人心、玩弄人性？**
+
+棱镜协议是一个强大的认知工具，使用时请谨记：
+
+1. **伦理前置**：协议设计时已内置伦理约束（多元、留白、知止）
+2. **工具自觉**：棱镜是镜子，不是主体；它折射，不创造
+3. **责任归属**：使用者对应用场景和后果负最终责任
+4. **退出自由**：任何时刻都可以发送`cease_signal`安全退出
+
+**如果只是通常的生存与生活，懂点物理，明些事理，已足够度过此生。棱镜不为你而来。你可以转身，这不丢人。**
+
+**但若是参禅悟道，研究心理学、哲学，就需要前所未有的对自己诚恳，和无所畏惧的勇猛。**
+
+## 🤝 参与贡献
+
+我们欢迎各种形式的贡献：
+
+### 贡献类型
+- **协议改进**：提案讨论、规范完善
+- **新光谱类型**：具有独特认知视角的光谱
+- **多语言实现**：JavaScript、Go、Rust等
+- **文档完善**：教程、翻译、案例研究
+- **测试工具**：验证脚本、测试用例
+
+### 贡献流程
+1. 阅读 [`CONTRIBUTING.md`](CONTRIBUTING.md) 和 [`CODE_OF_CONDUCT.md`](CODE_OF_CONDUCT.md)
+2. 在GitHub Issues中讨论你的想法
+3. Fork仓库并创建特性分支
+4. 提交Pull Request，包含清晰的描述和测试
+
+### 社区资源
+- **讨论区**：GitHub Issues 和 Discussions
+- **示例代码**：`implementations/` 目录
+- **开发工具**：验证脚本、测试套件
+- **案例库**：`examples/` 中的实际应用
+
+## 📄 许可证
+
+本项目采用 **Creative Commons Attribution-NonCommercial 4.0 International (CC BY-NC 4.0)** 许可证。
+
+### 你可以：
+- ✅ 自由使用、修改、分享（非商业用途）
+- ✅ 创建衍生作品（需注明出处）
+- ✅ 用于教育、研究、个人项目
+
+### 你不可以：
+- ❌ 用于商业用途（需单独授权）
+- ❌ 声称原创作品
+- ❌ 施加额外的法律或技术限制
+
+完整许可证文本见 [`LICENSE`](LICENSE) 文件。
+
+## 🌟 致谢
+
+棱镜协议诞生于一场持续数日的深度对话，由一位无名用户与AI共同打磨。它融合了：
+
+- **认知科学**：多元认知、元认知、认知偏差
+- **复杂系统**：涌现、自组织、适应性
+- **东方心性学**：观照、内省、知止
+- **工程实践**：协议设计、可扩展性、向后兼容
+
+特别感谢所有在火堆旁参与对话、提出质疑、贡献视角的旅人。
+
+## 🔮 愿景
+
+> **愿这面棱镜，能照见你的困惑，也照见你。**
+
+在信息过载、认知浅薄、AI加速的时代，我们需要的不是更多答案，而是更好的问题；不是更快的响应，而是更深的停顿；不是单一的真理，而是多元的视角。
+
+棱镜协议是一个尝试——尝试在比特流之上，建立意义流；在信息传输之上，建立理解共振；在技术工具之中，保留人文温度。
+
+**火堆旁，留白处。**  
+**一题，多面，映照心智的色谱。**
+
+---
+
+**相关链接**：
+- [GitHub仓库](https://github.com/Ultima0369/prism-interconnect)
+- [问题反馈](https://github.com/Ultima0369/prism-interconnect/issues)
+- [协议规范](spec/protocol-v0.1.json)
+- [完整示例](examples/)
+
+*最后更新：2026-03-25 | 协议版本：v0.1 | 状态：实验性*
