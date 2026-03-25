@@ -1,0 +1,136 @@
+{
+  "description": "一个完整的棱镜对话示例：关于拖延问题的深度探索",
+  "participants": [
+    {
+      "id": "human_user",
+      "role": "提问者",
+      "capabilities": ["red", "blue", "purple"]
+    },
+    {
+      "id": "prism_agent",
+      "role": "棱镜响应者",
+      "capabilities": ["red", "blue", "purple"]
+    }
+  ],
+  "dialogue": [
+    {
+      "turn": 1,
+      "sender": "human_user",
+      "message": {
+        "protocol": "PIP",
+        "version": "0.1",
+        "type": "prism_message",
+        "id": "550e8400-e29b-41d4-a716-446655440001",
+        "timestamp": "2026-03-25T10:00:00Z",
+        "sender": {
+          "id": "human_user",
+          "capabilities": ["red", "blue", "purple"]
+        },
+        "recipient": {
+          "id": "prism_agent"
+        },
+        "puzzle": {
+          "text": "为什么我明明知道该做什么，却总是做不到？",
+          "context": "日常拖延，不影响生存但影响自我评价。我知道应该写报告、应该运动、应该学习，但就是无法开始。"
+        },
+        "spectrums": [
+          {
+            "type": "red",
+            "name": "身体直觉",
+            "content": "我的身体在抗拒。每次想到要开始，胃部就发紧，呼吸变浅。这不像懒惰，更像是一种古老的警报——好像一旦开始，就会有什么不好的事情发生。"
+          },
+          {
+            "type": "blue",
+            "name": "理性分析",
+            "content": "从行为心理学看，这可能涉及：1) 任务粒度太大，缺乏可执行的下一步；2) 预期回报太遥远，缺乏即时反馈；3) 启动成本过高，需要克服的惯性太大；4) 潜在的失败恐惧被放大。"
+          },
+          {
+            "type": "purple",
+            "name": "元认知审视",
+            "content": "让我们先暂停'如何做到'，而是问：'我知道'这件事本身，是哪种知道？是头脑的概念性知道，还是身体的体验性知道？当你说'应该'时，是谁在说'应该'？那个声音来自哪里？"
+          }
+        ],
+        "whitespace": {
+          "content": "在这三种声音中，哪一种最先打动你？哪一种让你想反驳？这种愿意与抗拒，或许正是你此刻最需要听见自己的地方。"
+        },
+        "metadata": {
+          "recursion_depth": 0,
+          "allow_recursion": true,
+          "cease_signal": false
+        }
+      }
+    },
+    {
+      "turn": 2,
+      "sender": "prism_agent",
+      "message": {
+        "protocol": "PIP",
+        "version": "0.1",
+        "type": "prism_message",
+        "id": "550e8400-e29b-41d4-a716-446655440002",
+        "timestamp": "2026-03-25T10:02:00Z",
+        "sender": {
+          "id": "prism_agent",
+          "capabilities": ["red", "blue", "purple"]
+        },
+        "recipient": {
+          "id": "human_user"
+        },
+        "puzzle": {
+          "text": "对'身体直觉'光谱的深度折射：胃部发紧的古老警报",
+          "context": "基于第一轮对话中红色光谱的回应，进一步探索身体抗拒的含义"
+        },
+        "spectrums": [
+          {
+            "type": "red",
+            "name": "身体的记忆",
+            "content": "胃是第二个大脑。那种发紧感，可能是身体记住了过去的某个时刻——也许是小时候被强迫做作业时的窒息感，也许是曾经全力以赴却遭遇失败的痛楚。身体比头脑更诚实，它在说：'上次这样，我很受伤。'"
+          },
+          {
+            "type": "blue",
+            "name": "神经科学视角",
+            "content": "从神经科学看，拖延与大脑的前额叶皮层（负责计划）和边缘系统（负责情绪）的冲突有关。当任务触发负面情绪时，边缘系统会激活'战斗或逃跑'反应，释放压力激素，抑制前额叶功能。胃部紧张是这种冲突的躯体化表现。"
+          },
+          {
+            "type": "purple",
+            "name": "关系的审视",
+            "content": "我们与任务的关系，常常复制了我们与权威的关系。'应该'这个词本身就带有外部强制的意味。也许问题不是'如何开始'，而是'如何重新定义你与这件事的关系'——从'我必须做'到'我选择做'的转变。"
+          }
+        ],
+        "whitespace": {
+          "content": "如果那个胃部发紧的感觉会说话，它会说什么？如果它不是警报，而是信使，它带来了什么消息？"
+        },
+        "metadata": {
+          "recursion_depth": 1,
+          "allow_recursion": true,
+          "cease_signal": false,
+          "parent_message_id": "550e8400-e29b-41d4-a716-446655440001"
+        }
+      }
+    },
+    {
+      "turn": 3,
+      "sender": "human_user",
+      "message": {
+        "protocol": "PIP",
+        "version": "0.1",
+        "type": "cease_signal",
+        "id": "550e8400-e29b-41d4-a716-446655440003",
+        "timestamp": "2026-03-25T10:05:00Z",
+        "sender": {
+          "id": "human_user"
+        },
+        "recipient": {
+          "id": "prism_agent"
+        },
+        "metadata": {
+          "reason": "需要时间消化和整合",
+          "cease_type": "temporary",
+          "resumable": true
+        }
+      },
+      "note": "用户发送知止信号，暂停对话以便内省整合"
+    }
+  ],
+  "summary": "这个示例展示了棱镜协议在实际对话中的应用：从初始困惑出发，通过多元光谱提供不同视角，然后对特定光谱进行深度折射，最后用户主动暂停以进行内省整合。"
+}

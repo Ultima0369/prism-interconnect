@@ -1,0 +1,127 @@
+{
+  "description": "教育场景下的棱镜对话示例：帮助学生理解复杂概念",
+  "participants": [
+    {
+      "id": "student",
+      "role": "学生",
+      "capabilities": ["red", "blue", "purple"]
+    },
+    {
+      "id": "teacher_prism",
+      "role": "教师棱镜助手",
+      "capabilities": ["red", "blue", "purple", "green"]
+    }
+  ],
+  "dialogue": [
+    {
+      "turn": 1,
+      "sender": "student",
+      "message": {
+        "protocol": "PIP",
+        "version": "0.1",
+        "type": "prism_message",
+        "id": "660e8400-e29b-41d4-a716-446655440001",
+        "timestamp": "2026-03-25T14:30:00Z",
+        "sender": {
+          "id": "student",
+          "capabilities": ["red", "blue", "purple"]
+        },
+        "recipient": {
+          "id": "teacher_prism"
+        },
+        "puzzle": {
+          "text": "什么是'熵'？我理解公式，但感觉不到它的意义。",
+          "context": "物理学课程，学习了熵的数学定义，但无法与生活经验连接"
+        },
+        "spectrums": [
+          {
+            "type": "red",
+            "name": "直觉感受",
+            "content": "熵听起来像是一种无形的力量，让一切从有序走向混乱。就像我的房间，不管怎么整理，总会慢慢变乱。"
+          },
+          {
+            "type": "blue",
+            "name": "公式理解",
+            "content": "熵 S = k ln Ω，其中k是玻尔兹曼常数，Ω是微观状态数。数学上它衡量系统的无序程度。"
+          },
+          {
+            "type": "purple",
+            "name": "概念困惑",
+            "content": "我在想：如果熵总是增加，为什么生命能够从无序中创造出有序？这似乎违反了热力学第二定律。"
+          }
+        ],
+        "whitespace": {
+          "content": "在这些理解中，哪一部分让你感到最踏实？哪一部分让你最不安？"
+        },
+        "metadata": {
+          "recursion_depth": 0,
+          "allow_recursion": true,
+          "cease_signal": false,
+          "context_window": "academic"
+        }
+      }
+    },
+    {
+      "turn": 2,
+      "sender": "teacher_prism",
+      "message": {
+        "protocol": "PIP",
+        "version": "0.1",
+        "type": "prism_message",
+        "id": "660e8400-e29b-41d4-a716-446655440002",
+        "timestamp": "2026-03-25T14:35:00Z",
+        "sender": {
+          "id": "teacher_prism",
+          "capabilities": ["red", "blue", "purple", "green"]
+        },
+        "recipient": {
+          "id": "student"
+        },
+        "puzzle": {
+          "text": "连接熵的数学定义与生活体验",
+          "context": "回应学生的困惑，提供多元视角帮助理解熵的意义"
+        },
+        "spectrums": [
+          {
+            "type": "red",
+            "name": "生活比喻",
+            "content": "想象一杯热水和一杯冷水放在一起。热量总是从热流向冷，直到温度相同，永远不会反向流动。这就是熵增——能量从集中走向分散，就像墨水滴入清水，只会扩散不会聚合。"
+          },
+          {
+            "type": "blue",
+            "name": "科学解释",
+            "content": "你的直觉是对的：房间变乱是熵增的日常表现。但生命没有违反第二定律，因为生命是开放系统，它通过消耗能量（食物、阳光）来维持局部有序，同时向环境排放更多无序（热量、废物）。整体熵仍在增加。"
+          },
+          {
+            "type": "purple",
+            "name": "哲学视角",
+            "content": "熵也许是宇宙最根本的'时间箭头'。它定义了什么是'过去'和'未来'——过去是低熵状态，未来是高熵状态。我们记得过去但不知道未来，正是因为熵增的方向。"
+          },
+          {
+            "type": "green",
+            "name": "生态视角",
+            "content": "在生态系统中，熵增表现为能量从集中形式（阳光、化学能）流向分散形式（热量）。生命是延迟熵增的精致结构，但最终所有能量都会变成无法利用的热量。"
+          }
+        ],
+        "whitespace": {
+          "content": "在这些解释中，哪一个比喻让你对熵有了新的感受？哪一个视角让你想继续追问？"
+        },
+        "metadata": {
+          "recursion_depth": 1,
+          "allow_recursion": true,
+          "cease_signal": false,
+          "parent_message_id": "660e8400-e29b-41d4-a716-446655440001",
+          "custom_spectrum_used": true,
+          "custom_spectrum_name": "green"
+        }
+      }
+    }
+  ],
+  "notes": [
+    "这个示例展示了：",
+    "1. 教育场景下棱镜协议的应用",
+    "2. 自定义光谱类型（green）的使用",
+    "3. 如何连接抽象概念与生活体验",
+    "4. 多学科视角的整合（物理、哲学、生态）"
+  ]
+}
