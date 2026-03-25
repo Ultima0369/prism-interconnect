@@ -1,0 +1,487 @@
+# 🚀 棱镜协议 Kubernetes 部署配置
+# 生产就绪的企业级部署方案
+
+---
+# ==================== 配置映射 ====================
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: prism-sdk-config
+  namespace: prism-production
+  labels:
+    app: prism-sdk
+    component: api
+    version: v1.0.0
+data:
+  # 应用配置
+  PRISM_ENV: "production"
+  LOG_LEVEL: "INFO"
+  MAX_RECURSION_DEPTH: "5"
+  DEFAULT_WHITESPACE_DURATION: "45"
+  
+  # 伦理配置
+  ETHICS_NON_JUDGMENTAL_ENABLED: "true"
+  ETHICS_SAFETY_CHECKS_ENABLED: "true"
+  ETHICS_TRANSPARENCY_ENABLED: "true"
+  
+  # 性能配置
+  REQUEST_TIMEOUT_SECONDS: "30"
+  RATE_LIMIT_REQUESTS_PER_MINUTE: "60"
+  CACHE_ENABLED: "true"
+  CACHE_TTL_SECONDS: "300"
+
+---
+# ==================== 密钥 ====================
+apiVersion: v1
+kind: Secret
+metadata:
+  name: prism-sdk-secrets
+  namespace: prism-production
+  labels:
+    app: prism-sdk
+    component: api
+type: Opaque
+data:
+  # Base64 编码的密钥
+  API_KEY: "cHJpc20tcHJvZHVjdGlvbi1rZXk="
+  DATABASE_URL: "cG9zdGdyZXNxbDovL3VzZXI6cGFzc3dvcmRAZGIucHJpc20tZGV2LmNvbS9wcmlzbQ=="
+  REDIS_URL: "cmVkaXM6Ly9yZWRpcy5wcmlzbS1kZXYuY29tOjYzNzk="
+
+---
+# ==================== 部署 ====================
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: prism-sdk-api
+  namespace: prism-production
+  labels:
+    app: prism-sdk
+    component: api
+    version: v1.0.0
+spec:
+  replicas: 3
+  revisionHistoryLimit: 3
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+  selector:
+    matchLabels:
+      app: prism-sdk
+      component: api
+  template:
+    metadata:
+      labels:
+        app: prism-sdk
+        component: api
+        version: v1.0.0
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/port: "8000"
+        prometheus.io/path: "/metrics"
+    spec:
+      # 亲和性规则
+      affinity:
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+          - weight: 100
+            podAffinityTerm:
+              labelSelector:
+                matchExpressions:
+                - key: app
+                  operator: In
+                  values:
+                  - prism-sdk
+              topologyKey: kubernetes.io/hostname
+      
+      # 节点选择器
+      nodeSelector:
+        node-type: compute-optimized
+      
+      # 容忍度
+      tolerations:
+      - key: "dedicated"
+        operator: "Equal"
+        value: "prism"
+        effect: "NoSchedule"
+      
+      containers:
+      - name: prism-sdk-api
+        image: prism-sdk:1.0.0
+        imagePullPolicy: IfNotPresent
+        
+        # 资源限制
+        resources:
+          requests:
+            memory: "256Mi"
+            cpu: "250m"
+          limits:
+            memory: "512Mi"
+            cpu: "500m"
+        
+        # 端口
+        ports:
+        - containerPort: 8000
+          name: http
+          protocol: TCP
+        
+        # 环境变量
+        env:
+        - name: PRISM_ENV
+          valueFrom:
+            configMapKeyRef:
+              name: prism-sdk-config
+              key: PRISM_ENV
+        - name: LOG_LEVEL
+          valueFrom:
+            configMapKeyRef:
+              name: prism-sdk-config
+              key: LOG_LEVEL
+        - name: API_KEY
+          valueFrom:
+            secretKeyRef:
+              name: prism-sdk-secrets
+              key: API_KEY
+        
+        # 健康检查
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 8000
+          initialDelaySeconds: 30
+          periodSeconds: 10
+          timeoutSeconds: 3
+          failureThreshold: 3
+        
+        readinessProbe:
+          httpGet:
+            path: /ready
+            port: 8000
+          initialDelaySeconds: 5
+          periodSeconds: 5
+          timeoutSeconds: 2
+          failureThreshold: 1
+        
+        # 启动探针
+        startupProbe:
+          httpGet:
+            path: /startup
+            port: 8000
+          failureThreshold: 30
+          periodSeconds: 5
+        
+        # 安全上下文
+        securityContext:
+          runAsNonRoot: true
+          runAsUser: 1000
+          allowPrivilegeEscalation: false
+          readOnlyRootFilesystem: true
+          capabilities:
+            drop:
+            - ALL
+        
+        # 生命周期钩子
+        lifecycle:
+          preStop:
+            exec:
+              command: ["/bin/sh", "-c", "echo '优雅关闭棱镜协议 SDK...' && sleep 5"]
+        
+        # 卷挂载
+        volumeMounts:
+        - name: config-volume
+          mountPath: /etc/prism/config
+          readOnly: true
+        - name: cache-volume
+          mountPath: /var/cache/prism
+        
+        # 命令行参数
+        args: ["--workers", "4", "--host", "0.0.0.0", "--port", "8000"]
+      
+      # 初始化容器
+      initContainers:
+      - name: init-config
+        image: busybox:1.35
+        command: ['sh', '-c', 'echo "初始化棱镜协议配置..." && mkdir -p /etc/prism/config && chown 1000:1000 /etc/prism/config']
+        volumeMounts:
+        - name: config-volume
+          mountPath: /etc/prism/config
+      
+      # 卷
+      volumes:
+      - name: config-volume
+        emptyDir: {}
+      - name: cache-volume
+        emptyDir:
+          sizeLimit: 1Gi
+
+---
+# ==================== 水平 Pod 自动扩缩 ====================
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: prism-sdk-hpa
+  namespace: prism-production
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: prism-sdk-api
+  minReplicas: 2
+  maxReplicas: 10
+  metrics:
+  - type: Resource
+    resource:
+      name: cpu
+      target:
+        type: Utilization
+        averageUtilization: 70
+  - type: Resource
+    resource:
+      name: memory
+      target:
+        type: Utilization
+        averageUtilization: 80
+  behavior:
+    scaleDown:
+      stabilizationWindowSeconds: 300
+      policies:
+      - type: Percent
+        value: 10
+        periodSeconds: 60
+    scaleUp:
+      stabilizationWindowSeconds: 60
+      policies:
+      - type: Percent
+        value: 100
+        periodSeconds: 60
+
+---
+# ==================== 服务 ====================
+apiVersion: v1
+kind: Service
+metadata:
+  name: prism-sdk-service
+  namespace: prism-production
+  labels:
+    app: prism-sdk
+    component: api
+spec:
+  type: ClusterIP
+  selector:
+    app: prism-sdk
+    component: api
+  ports:
+  - port: 80
+    targetPort: 8000
+    protocol: TCP
+    name: http
+  sessionAffinity: ClientIP
+  sessionAffinityConfig:
+    clientIP:
+      timeoutSeconds: 10800
+
+---
+# ==================== 入口 ====================
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: prism-sdk-ingress
+  namespace: prism-production
+  annotations:
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+    nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+    nginx.ingress.kubernetes.io/proxy-body-size: "10m"
+    nginx.ingress.kubernetes.io/proxy-read-timeout: "60"
+    nginx.ingress.kubernetes.io/proxy-send-timeout: "60"
+    cert-manager.io/cluster-issuer: "letsencrypt-prod"
+spec:
+  ingressClassName: nginx
+  tls:
+  - hosts:
+    - api.prism-interconnect.dev
+    secretName: prism-tls-secret
+  rules:
+  - host: api.prism-interconnect.dev
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: prism-sdk-service
+            port:
+              number: 80
+
+---
+# ==================== Pod 中断预算 ====================
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: prism-sdk-pdb
+  namespace: prism-production
+spec:
+  minAvailable: 2
+  selector:
+    matchLabels:
+      app: prism-sdk
+      component: api
+
+---
+# ==================== 网络策略 ====================
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: prism-sdk-network-policy
+  namespace: prism-production
+spec:
+  podSelector:
+    matchLabels:
+      app: prism-sdk
+      component: api
+  policyTypes:
+  - Ingress
+  - Egress
+  ingress:
+  - from:
+    - namespaceSelector:
+        matchLabels:
+          name: prism-monitoring
+    ports:
+    - protocol: TCP
+      port: 8000
+  - from:
+    - ipBlock:
+        cidr: 10.0.0.0/8
+    ports:
+    - protocol: TCP
+      port: 8000
+  egress:
+  - to:
+    - ipBlock:
+        cidr: 0.0.0.0/0
+        except:
+        - 10.0.0.0/8
+    ports:
+    - protocol: TCP
+      port: 443
+    - protocol: TCP
+      port: 53
+    - protocol: UDP
+      port: 53
+
+---
+# ==================== 服务监控 ====================
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: prism-sdk-monitor
+  namespace: prism-monitoring
+  labels:
+    app: prism-sdk
+    release: prometheus
+spec:
+  selector:
+    matchLabels:
+      app: prism-sdk
+      component: api
+  namespaceSelector:
+    matchNames:
+    - prism-production
+  endpoints:
+  - port: http
+    interval: 30s
+    scrapeTimeout: 10s
+    path: /metrics
+    relabelings:
+    - sourceLabels: [__meta_kubernetes_pod_name]
+      targetLabel: pod
+    - sourceLabels: [__meta_kubernetes_namespace]
+      targetLabel: namespace
+
+---
+# ==================== 告警规则 ====================
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: prism-sdk-alerts
+  namespace: prism-monitoring
+  labels:
+    app: prism-sdk
+    release: prometheus
+spec:
+  groups:
+  - name: prism-sdk.rules
+    rules:
+    - alert: PrismSDKHighErrorRate
+      expr: |
+        rate(prism_sdk_http_requests_total{status=~"5.."}[5m]) / rate(prism_sdk_http_requests_total[5m]) > 0.05
+      for: 5m
+      labels:
+        severity: critical
+        component: api
+      annotations:
+        summary: "棱镜协议 SDK 错误率过高"
+        description: "{{ $labels.instance }} 的错误率超过 5% (当前值: {{ $value }})"
+    
+    - alert: PrismSDKHighLatency
+      expr: |
+        histogram_quantile(0.95, rate(prism_sdk_http_request_duration_seconds_bucket[5m])) > 2
+      for: 5m
+      labels:
+        severity: warning
+        component: api
+      annotations:
+        summary: "棱镜协议 SDK 延迟过高"
+        description: "{{ $labels.instance }} 的 P95 延迟超过 2 秒 (当前值: {{ $value }}s)"
+    
+    - alert: PrismSDKLowAvailability
+      expr: |
+        up{job="prism-sdk-api"} == 0
+      for: 2m
+      labels:
+        severity: critical
+        component: api
+      annotations:
+        summary: "棱镜协议 SDK 不可用"
+        description: "{{ $labels.instance }} 已宕机超过 2 分钟"
+    
+    - alert: PrismSDKHighMemoryUsage
+      expr: |
+        container_memory_usage_bytes{container="prism-sdk-api"} / container_spec_memory_limit_bytes{container="prism-sdk-api"} > 0.9
+      for: 5m
+      labels:
+        severity: warning
+        component: api
+      annotations:
+        summary: "棱镜协议 SDK 内存使用率过高"
+        description: "{{ $labels.instance }} 的内存使用率超过 90% (当前值: {{ $value }}%)"
+
+---
+# ==================== 注释 ====================
+# 部署命令:
+# kubectl apply -f prism-sdk-deployment.yaml
+#
+# 验证部署:
+# kubectl get all -n prism-production -l app=prism-sdk
+#
+# 查看日志:
+# kubectl logs -f deployment/prism-sdk-api -n prism-production
+#
+# 端口转发:
+# kubectl port-forward service/prism-sdk-service 8000:80 -n prism-production
+#
+# 生产就绪检查清单:
+# ✅ 多副本部署 (3个副本)
+# ✅ 资源限制和请求
+# ✅ 健康检查 (liveness/readiness/startup)
+# ✅ 水平自动扩缩 (HPA)
+# ✅ 滚动更新策略
+# ✅ Pod 中断预算
+# ✅ 网络策略
+# ✅ 监控和告警
+# ✅ TLS 加密
+# ✅ 安全上下文 (非root用户, 只读文件系统)
+# ✅ 亲和性/反亲和性规则
+# ✅ 优雅关闭
+# ✅ 配置和密钥管理
