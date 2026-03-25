@@ -1,0 +1,517 @@
+# 🔮 棱镜互联协议 - OpenClaw技能
+# Prism Interconnect Protocol - OpenClaw Skill
+
+name: prism-interconnect
+version: 1.0.0
+description: |
+  棱镜互联协议（PIP）的OpenClaw集成技能。
+  允许通过自然语言触发棱镜对话，探索问题的多元视角。
+
+author: 星尘 & 璇玑
+license: CC BY-NC 4.0
+repository: https://github.com/Ultima0369/prism-interconnect
+
+# 技能配置
+config:
+  # 默认代理配置
+  default_agent:
+    name: "棱镜助手"
+    capabilities: ["red", "blue", "purple", "green"]
+    max_depth: 3
+    enable_caching: true
+  
+  # 对话设置
+  conversation:
+    auto_cease_after: 5  # 5轮后自动建议知止
+    whitespace_duration: 30  # 建议留白时间（秒）
+    enable_recursion: true
+  
+  # 显示设置
+  display:
+    format: "rich"  # rich, simple, json
+    show_metadata: false
+    highlight_keywords: true
+  
+  # 性能设置
+  performance:
+    cache_ttl: 300  # 缓存时间（秒）
+    timeout: 30  # 生成超时时间（秒）
+    max_concurrent: 5  # 最大并发数
+
+# 触发器定义
+triggers:
+  # 直接触发
+  - pattern: "@棱镜"
+    description: "直接调用棱镜助手"
+    examples:
+      - "@棱镜 为什么我总在亲密关系中重复同样的矛盾？"
+      - "@棱镜 帮我分析一下职业选择的困境"
+  
+  # 关键词触发
+  - pattern: "/(棱镜|prism|多角度|多元视角)/i"
+    description: "关键词触发棱镜对话"
+    examples:
+      - "我想用棱镜协议探索这个问题"
+      - "请从多个角度分析这个困境"
+  
+  # 困惑识别触发
+  - pattern: "/(为什么|如何|怎么办|困惑|矛盾)/i"
+    description: "识别用户困惑并建议使用棱镜"
+    examples:
+      - "为什么我明明知道该做什么，却总是做不到？"
+      - "我该如何在工作和生活之间找到平衡？"
+
+# 命令定义
+commands:
+  # 基础折射命令
+  - name: refract
+    description: "折射一个困惑，生成多元视角"
+    usage: "折射 <困惑文本> [上下文]"
+    examples:
+      - "折射 为什么学习新技能这么难？"
+      - "折射 团队决策困难 上下文：技术团队，成员背景多样"
+    
+    handler: |
+      const { PrismAgent } = require('./prism_agent.js');
+      
+      async function handle({ text, context, depth = 0 }) {
+        const agent = new PrismAgent(
+          'openclaw_prism',
+          config.default_agent.capabilities,
+          config.default_agent.max_depth,
+          config.default_agent.enable_caching
+        );
+        
+        const response = await agent.refract(text, context, depth);
+        
+        // 格式化输出
+        return formatResponse(response, config.display.format);
+      }
+  
+  # 递归探索命令
+  - name: recurse
+    description: "对特定光谱进行深度探索"
+    usage: "递归 <光谱索引> [追问问题]"
+    examples:
+      - "递归 1"
+      - "递归 2 这个分析的具体实施步骤是什么？"
+    
+    handler: |
+      async function handle({ spectrumIndex, question, session }) {
+        // 从会话历史获取上一个消息
+        const lastMessage = session.getLastMessage('prism');
+        if (!lastMessage) {
+          return "请先使用折射命令生成棱镜消息";
+        }
+        
+        const spectrum = lastMessage.spectrums[spectrumIndex - 1];
+        if (!spectrum) {
+          return `无效的光谱索引，请选择1-${lastMessage.spectrums.length}`;
+        }
+        
+        const puzzle = question 
+          ? `${spectrum.name}: ${question}`
+          : `对"${spectrum.name}"的深度探索: ${spectrum.content.substring(0, 100)}...`;
+        
+        const depth = lastMessage.metadata.recursion_depth + 1;
+        
+        return await refract({
+          text: puzzle,
+          context: `对前一轮${spectrum.name}光谱的递归探索`,
+          depth: depth
+        });
+      }
+  
+  # 知止命令
+  - name: cease
+    description: "暂停或终止棱镜对话"
+    usage: "知止 [原因]"
+    examples:
+      - "知止"
+      - "知止 需要时间消化这些观点"
+    
+    handler: |
+      async function handle({ reason = "用户主动暂停" }) {
+        const agent = new PrismAgent('openclaw_prism');
+        const response = await agent.sendCeaseSignal(reason);
+        
+        return formatResponse(response, config.display.format);
+      }
+  
+  # 会话管理命令
+  - name: session
+    description: "管理棱镜会话"
+    usage: "会话 <info|clear|history>"
+    examples:
+      - "会话 info"
+      - "会话 clear"
+      - "会话 history"
+    
+    handler: |
+      async function handle({ action = 'info', session }) {
+        switch (action.toLowerCase()) {
+          case 'info':
+            const agent = new PrismAgent('openclaw_prism');
+            const info = agent.getSessionInfo();
+            return formatSessionInfo(info);
+            
+          case 'clear':
+            session.clear('prism');
+            return "棱镜会话已清空";
+            
+          case 'history':
+            const history = session.getHistory('prism');
+            return formatHistory(history);
+            
+          default:
+            return `未知操作: ${action}`;
+        }
+      }
+  
+  # 配置命令
+  - name: config
+    description: "查看或修改棱镜配置"
+    usage: "配置 [get|set <键> <值>]"
+    examples:
+      - "配置 get"
+      - "配置 set max_depth 5"
+      - "配置 set capabilities red,blue,purple,green,orange"
+    
+    handler: |
+      async function handle({ action = 'get', key, value }) {
+        switch (action.toLowerCase()) {
+          case 'get':
+            return formatConfig(config);
+            
+          case 'set':
+            if (!key || !value) {
+              return "请提供键和值";
+            }
+            
+            // 更新配置
+            const success = updateConfig(key, value);
+            if (success) {
+              return `配置已更新: ${key} = ${value}`;
+            } else {
+              return `无法更新配置: ${key}`;
+            }
+            
+          default:
+            return `未知操作: ${action}`;
+        }
+      }
+
+# 工具函数定义
+helpers:
+  # 响应格式化
+  formatResponse: |
+    function formatResponse(response, format = 'rich') {
+      switch (format) {
+        case 'rich':
+          return formatRichResponse(response);
+          
+        case 'simple':
+          return formatSimpleResponse(response);
+          
+        case 'json':
+          return JSON.stringify(response, null, 2);
+          
+        default:
+          return formatRichResponse(response);
+      }
+    }
+    
+    function formatRichResponse(response) {
+      if (response.type === 'cease_signal') {
+        const metadata = response.metadata || {};
+        return `
+🛑 **知止信号**
+---
+**原因**: ${metadata.reason || '未指定'}
+**类型**: ${metadata.cease_type || 'temporary'}
+**可恢复**: ${metadata.resumable !== false ? '是' : '否'}
+---
+${metadata.session_summary ? `会话摘要: ${JSON.stringify(metadata.session_summary, null, 2)}` : ''}
+        `.trim();
+      }
+      
+      const puzzle = response.puzzle || {};
+      const spectrums = response.spectrums || [];
+      const whitespace = response.whitespace || {};
+      const metadata = response.metadata || {};
+      
+      let output = `
+🔮 **棱镜响应**
+---
+**困惑**: ${puzzle.text}
+${puzzle.context ? `**上下文**: ${puzzle.context}` : ''}
+---
+      `.trim();
+      
+      // 添加光谱
+      spectrums.forEach((spectrum, index) => {
+        output += `
+        
+**${index + 1}. [${spectrum.type}] ${spectrum.name}**
+${spectrum.content}
+        `.trim();
+      });
+      
+      // 添加留白
+      output += `
+        
+💭 **留白**
+${whitespace.content}
+      `.trim();
+      
+      // 添加元数据
+      if (config.display.show_metadata) {
+        output += `
+        
+📊 **元数据**
+深度: ${metadata.recursion_depth || 0} | 允许递归: ${metadata.allow_recursion ? '是' : '否'}
+        `.trim();
+      }
+      
+      return output;
+    }
+    
+    function formatSimpleResponse(response) {
+      if (response.type === 'cease_signal') {
+        return `[知止] ${response.metadata?.reason || ''}`;
+      }
+      
+      const spectrums = response.spectrums || [];
+      const summary = spectrums.map(s => 
+        `[${s.type}] ${s.content.substring(0, 50)}...`
+      ).join(' | ');
+      
+      return `棱镜: ${summary}`;
+    }
+  
+  # 会话信息格式化
+  formatSessionInfo: |
+    function formatSessionInfo(info) {
+      return `
+📋 **棱镜会话信息**
+---
+会话ID: ${info.session_id}
+持续时间: ${Math.round(info.duration_seconds)}秒
+消息总数: ${info.total_messages}
+最大深度: ${info.max_depth_reached}
+知止信号: ${info.cease_signals}
+开始时间: ${info.start_time}
+      `.trim();
+    }
+  
+  # 配置格式化
+  formatConfig: |
+    function formatConfig(config) {
+      const agentConfig = config.default_agent || {};
+      const convConfig = config.conversation || {};
+      const perfConfig = config.performance || {};
+      
+      return `
+⚙️ **棱镜配置**
+---
+**代理配置**
+名称: ${agentConfig.name}
+能力: ${(agentConfig.capabilities || []).join(', ')}
+最大深度: ${agentConfig.max_depth}
+启用缓存: ${agentConfig.enable_caching ? '是' : '否'}
+
+**对话设置**
+自动知止: ${convConfig.auto_cease_after || '禁用'}轮后
+留白时间: ${convConfig.whitespace_duration || 30}秒
+启用递归: ${convConfig.enable_recursion ? '是' : '否'}
+
+**性能设置**
+缓存TTL: ${perfConfig.cache_ttl || 300}秒
+超时时间: ${perfConfig.timeout || 30}秒
+最大并发: ${perfConfig.max_concurrent || 5}
+      `.trim();
+    }
+  
+  # 配置更新
+  updateConfig: |
+    function updateConfig(key, value) {
+      const keys = key.split('.');
+      let current = config;
+      
+      for (let i = 0; i < keys.length - 1; i++) {
+        if (!current[keys[i]]) {
+          current[keys[i]] = {};
+        }
+        current = current[keys[i]];
+      }
+      
+      const lastKey = keys[keys.length - 1];
+      
+      // 类型转换
+      let finalValue = value;
+      if (value === 'true') finalValue = true;
+      if (value === 'false') finalValue = false;
+      if (!isNaN(value) && value !== '') finalValue = Number(value);
+      if (value.includes(',')) finalValue = value.split(',').map(v => v.trim());
+      
+      current[lastKey] = finalValue;
+      
+      // 保存配置
+      saveConfig(config);
+      
+      return true;
+    }
+
+# 依赖文件
+dependencies:
+  - path: ../../implementations/python/prism_agent.py
+    description: "Python棱镜代理实现"
+    
+  - path: ./prism_helper.js
+    description: "JavaScript辅助函数"
+
+# 安装说明
+install:
+  - description: "安装Python依赖"
+    command: "pip install -r ../../requirements.txt"
+    
+  - description: "安装Node.js依赖（如需要）"
+    command: "npm install --no-save uuid"
+    
+  - description: "验证安装"
+    command: "python -c \"from prism_agent import PrismAgent; print('✅ Python模块导入成功')\""
+
+# 使用示例
+examples: |
+  ## 基础使用
+  
+  1. **直接触发**
+     ```
+     用户: @棱镜 为什么我总在决策时犹豫不决？
+     助手: [生成包含红、蓝、紫三种光谱的响应]
+     ```
+  
+  2. **递归探索**
+     ```
+     用户: 递归 1
+     助手: [对第一个光谱进行深度探索]
+     ```
+  
+  3. **知止退出**
+     ```
+     用户: 知止 需要时间思考
+     助手: [发送知止信号，结束会话]
+     ```
+  
+  ## 高级功能
+  
+  1. **会话管理**
+     ```
+     用户: 会话 info
+     助手: [显示当前会话信息]
+     
+     用户: 会话 clear
+     助手: [清空会话历史]
+     ```
+  
+  2. **配置调整**
+     ```
+     用户: 配置 set max_depth 5
+     助手: [更新最大递归深度为5]
+     
+     用户: 配置 get
+     助手: [显示当前配置]
+     ```
+  
+  3. **自定义光谱**
+     ```
+     用户: 配置 set capabilities red,blue,purple,green
+     助手: [启用绿色生态视角]
+     ```
+
+# 注意事项
+notes: |
+  ## 重要提醒
+  
+  1. **伦理使用**
+     - 棱镜协议设计为非评判性工具
+     - 不应用于操控或影响他人决策
+     - 尊重用户的认知自主权
+  
+  2. **性能考虑**
+     - 深度递归可能消耗较多资源
+     - 建议设置合理的最大深度
+     - 启用缓存可提高响应速度
+  
+  3. **隐私保护**
+     - 对话内容可能被记录用于改进
+     - 敏感信息建议匿名化处理
+     - 支持随时知止退出
+  
+  4. **最佳实践**
+     - 从简单困惑开始，逐步深入
+     - 充分利用留白时间进行内省
+     - 适时知止，避免认知过载
+  
+  ## 故障排除
+  
+  1. **导入错误**
+     ```
+     确保Python路径正确
+     检查依赖是否安装
+     验证文件权限
+     ```
+  
+  2. **响应缓慢**
+     ```
+     减少最大并发数
+     启用缓存功能
+     检查网络连接
+     ```
+  
+  3. **内容质量问题**
+     ```
+     调整光谱引擎参数
+     提供更具体的上下文
+     尝试不同的光谱组合
+     ```
+
+# 更新日志
+changelog:
+  - version: 1.0.0
+    date: 2026-03-25
+    changes:
+      - "初始版本发布"
+      - "支持基础折射、递归、知止功能"
+      - "提供丰富的配置选项"
+      - "包含完整的文档和示例"
+  
+  - version: 0.9.0
+    date: 2026-03-20
+    changes:
+      - "测试版本发布"
+      - "基础功能实现"
+      - "初步文档完成"
+
+# 联系信息
+contact:
+  author: "星尘 & 璇玑"
+  email: "not-provided@example.com"
+  issues: "https://github.com/Ultima0369/prism-interconnect/issues"
+  discussions: "https://github.com/Ultima0369/prism-interconnect/discussions"
+
+# 许可证信息
+license_info: |
+  本技能基于棱镜互联协议项目，采用 CC BY-NC 4.0 许可证。
+  
+  您可以：
+  - 自由使用、修改、分享（非商业用途）
+  - 创建衍生作品（需注明出处）
+  - 用于教育、研究、个人项目
+  
+  您不可以：
+  - 用于商业用途（需单独授权）
+  - 声称原创作品
+  - 施加额外的法律或技术限制
+  
+  完整许可证文本见项目根目录的 LICENSE 文件。
