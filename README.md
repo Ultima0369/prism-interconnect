@@ -248,6 +248,10 @@ python scripts/validate_constraints.py examples/
 |------|------|------|
 | **白皮书** | 协议背景、设计理念、技术规范 | [`docs/whitepaper.md`](docs/whitepaper.md) |
 | **设计哲学** | 为什么做这个协议、伦理考量 | [`docs/philosophy.md`](docs/philosophy.md) |
+| **一分钟看懂** | 快速了解棱镜协议的核心 | [`docs/one-minute-intro.md`](docs/one-minute-intro.md) |
+| **演示视频脚本** | 3分钟完整演示脚本 | [`docs/video-script.md`](docs/video-script.md) |
+| **对话实验邀请** | 参与真实场景验证的邀请 | [`docs/experiment-invite.md`](docs/experiment-invite.md) |
+| **设计哲学（英文）** | 哲学文档的完整英文翻译 | [`docs/philosophy.en.md`](docs/philosophy.en.md) |
 | **开发者指南** | 如何实现、扩展、集成 | [`DEVELOPER_GUIDE.md`](DEVELOPER_GUIDE.md) |
 | **协议演进** | 版本策略、路线图、兼容性 | [`spec/PROTOCOL_EVOLUTION.md`](spec/PROTOCOL_EVOLUTION.md) |
 | **完整示例** | 实际对话记录、使用案例 | [`examples/`](examples/) |
