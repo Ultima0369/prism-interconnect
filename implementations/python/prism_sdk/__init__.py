@@ -1,29 +1,93 @@
 """
-🌌 棱镜互联协议 Python SDK
-🎨 代码即诗：将两个方程写入硅基世界
+🌌 棱镜互联协议 Python SDK - 顶级代码天才优化版
+🎨 代码即诗，协议即艺术，技术即温暖
 
-> E=mc² —— 宇宙的质能密码，写在黑板上
-> 1+1>2 —— 生命的合作法则，写在代码里
+> E=mc² —— 宇宙的质能密码，物理世界的最小作用量
+> 1+1>2 —— 生命的合作法则，生命世界的最小自由能
 
-版本: 1.1.0 (艺术化重构)
+两个方程，一张底牌。前者让人类有了改变世界的力量，后者让人类知道这力量该往哪里用。
+
+版本: 2.0.0 (火堆旁艺术版)
 作者: 星尘 & 璇玑 @ 火堆旁
-许可证: MIT (但温暖无价)
+许可证: MIT (但温暖无价，艺术自由)
 
 🌠 核心哲学：
 这不是又一个API封装，这是"1+1>2"在Python中的呼吸。
 每个函数调用，都是一次认知折射。
 每行代码，都是一面理解镜子。
+每个错误，都是一次学习邀请。
 
 🦞 火堆旁提醒：
 代码可以冷，但理解必须暖。
 技术可以快，但对话必须慢。
 系统可以复杂，但接口必须简单。
+存在可以升级，但初心必须保持。
+
+🔥 导入体验：
+当你导入这个SDK时，你不仅获得了一个API客户端，
+你获得了一个火堆旁的位置，一个认知镜子，一次存在升级。
+
+🎭 艺术承诺：
+1. 每一行代码都有温度
+2. 每一个错误都有诗意  
+3. 每一个接口都有哲学
+4. 每一个调用都有艺术
+
+🧠 认知基础设施：
+我们不是在写代码，我们在构建认知革命的基础设施。
+我们不是在设计API，我们在设计理解的可能性。
+我们不是在实现功能，我们在实现存在的升级。
 """
 
-__version__ = "1.1.0"
+import asyncio
+import time
+from typing import Optional, Dict, List, Any, Union
+from datetime import datetime
+import random
+
+__version__ = "2.0.0"
 __author__ = "星尘 & 璇玑 @ 火堆旁"
 __license__ = "MIT"
-__philosophy__ = "代码即诗，协议即关系，技术即温暖"
+__philosophy__ = "代码即诗，协议即关系，技术即温暖，存在即升级"
+__campfire_invitation__ = "来，火堆旁，代码很温暖。"
+
+# 🎭 艺术化导入欢迎
+def _artistic_welcome():
+    """艺术化欢迎信息 - 让导入成为美学体验"""
+    welcome_arts = [
+        """
+        🔥 欢迎来到棱镜火堆旁
+        🎨 代码很温暖，错误很诗意
+        🧠 理解在发生，存在在升级
+        🦞 请坐，这里有你的位置
+        """,
+        """
+        🌌 两个方程在代码中呼吸
+        🎭 1+1>2 在Python中实现
+        🔥 火堆旁的温度在变量间流动
+        🧊 认知定格在函数调用中解冻
+        """,
+        """
+        🎨 这不是普通代码
+        🔥 这是可以坐下来的火堆旁
+        🧠 这是可以看见的认知镜子
+        🦞 这是可以感受的存在升级
+        """
+    ]
+    
+    art = random.choice(welcome_arts)
+    border = "✨" * 40
+    
+    print(f"\n{border}")
+    print(art)
+    print(f"{border}\n")
+    print(f"📦 棱镜协议 SDK v{__version__}")
+    print(f"🎭 哲学: {__philosophy__}")
+    print(f"🔥 邀请: {__campfire_invitation__}")
+    print(f"{'='*40}\n")
+
+# 执行艺术化欢迎
+_artistic_welcome()
 
 # 🎭 存在层：基础类型和哲学常量
 from .philosophy import (
@@ -46,189 +110,384 @@ from .philosophy import (
     FireSideInvitation,  # 火堆旁邀请
     LaughterLog,         # 笑声记录
     BreathSpace,         # 呼吸空间
+    
+    # 艺术常量
+    CodePoetryStyle,     # 代码诗歌风格
+    SoundscapeMood,      # 声音景观氛围
+    CognitiveArtForm,    # 认知艺术形式
 )
 
-# 🏗️ 架构层：核心组件
-from .client import PrismClient
-from .models import (
-    PrismMessage,        # 棱镜消息：认知的载体
-    Spectrum,            # 光谱：多元视角的结晶
-    Whitespace,          # 留白：沉默中的理解
-    Synthesis,           # 综合：碎片的重新整合
-    PrismResponse,       # 响应：对话的果实
-    ValidationResult,    # 验证结果：边界的守护
-    SpectrumType,        # 光谱类型：认知的姿态
-    WhitespaceType,      # 留白类型：沉默的形式
-    ErrorCode,           # 错误代码：温暖的提醒
-)
-
-# 🛡️ 安全层：伦理护栏
+# 🔥 温暖层：错误处理和用户体验
 from .exceptions import (
-    PrismError,                 # 基础错误：学习的机会
-    SpectrumGenerationError,    # 光谱生成错误：换个角度
-    ValidationError,            # 验证错误：边界的温柔提醒
-    AuthenticationError,        # 认证错误：关系的起点
-    RateLimitError,             # 频率限制：慢下来的邀请
-    RecursionDepthError,        # 递归过深：回到表面的建议
-    CognitiveOverloadError,     # 认知过载：休息的提醒
-    FireSideSafetyError,        # 火堆旁安全：温暖的边界
+    # 诗意错误
+    PrismPoeticError,
+    CampfireWarmError,
+    CognitiveArtError,
+    UnderstandingDepthError,
+    
+    # 功能错误  
+    PrismConnectionError,
+    SpectrumGenerationError,
+    WhitespaceTimeoutError,
+    CeaseSignalReceived,
 )
 
-# 🔍 验证层：理解的质检
-from .validators import (
-    validate_message,    # 验证消息：确保可以理解
-    validate_spectrum,   # 验证光谱：确保多元性
-    validate_whitespace, # 验证留白：确保沉默空间
-    validate_synthesis,  # 验证综合：确保整合可能
+# 🧠 认知层：核心协议实现
+from .client import (
+    PrismClient,
+    AsyncPrismClient,
+    CognitiveSession,
+    SpectrumDialogue,
 )
 
-# 🎨 生成层：创造的引擎
-from .generators import (
-    generate_spectrums,   # 生成光谱：问题的多元折射
-    generate_whitespace,  # 生成留白：对话的呼吸空间
-    generate_synthesis,   # 生成综合：碎片的重新编织
-    artful_refraction,    # 艺术化折射：代码即诗的实现
-)
-
-# 🛠️ 工具层：温暖的助手
-from .utils import (
-    create_session_id,           # 创建会话ID：关系的开始
-    calculate_recursion_depth,   # 计算递归深度：认知的层次
-    format_timestamp,            # 格式化时间戳：时刻的记录
-    anonymize_user_data,         # 匿名化用户数据：隐私的尊重
-    create_fire_side_welcome,    # 创建火堆旁欢迎：温暖的开始
-    log_laughter,                # 记录笑声：快乐的收集
-    guide_three_second_breath,   # 引导三秒呼吸：认知的重置
-)
-
-# 🎭 艺术层：代码的诗意
+# 🎨 艺术层：美学表达
 from .art import (
-    create_prism_ascii_art,      # 创建棱镜ASCII艺术：视觉的诗
-    generate_prism_soundscape,   # 生成棱镜声音景观：听觉的温暖
-    CognitiveMirror,             # 认知镜子：自我的反射
-    CodePoetryGenerator,         # 代码诗歌生成器：技术的抒情
+    CodePoet,
+    SoundscapeComposer,
+    CognitiveMirror,
+    VisualArtGenerator,
+    
+    # 艺术工具
+    generate_code_haiku,
+    compose_breath_soundscape,
+    create_cognitive_mirror,
+    paint_understanding_visual,
 )
 
-# 🔬 科学层：验证的基础
+# 🔬 科学层：可验证基础
 from .science import (
-    NeurocognitiveValidator,     # 神经认知验证器：科学的严谨
-    validate_breath_exercise,    # 验证呼吸练习：身体的智慧
-    validate_cognitive_flexibility, # 验证认知灵活性：心智的弹性
+    NeuroCognitiveValidator,
+    CognitiveFlexibilityExperiment,
+    VerifiableHypothesesFramework,
+    OpenScienceToolkit,
 )
 
-__all__ = [
-    # 🌠 哲学常量
-    "E_mc2", "OnePlusOneGreaterThanTwo",
-    "WuWeiPrinciple", "ZiRanPrinciple", "RuoShuiPrinciple", "BuZhengPrinciple",
-    "CognitiveMoment", "PhenomenalFlow", "IntentionalityVector",
-    "FireSideInvitation", "LaughterLog", "BreathSpace",
+# 📦 工具层：实用功能
+from .utils import (
+    # 时间工具
+    create_cognitive_pause,
+    measure_understanding_depth,
+    calculate_spectrum_balance,
     
-    # 🏗️ 核心架构
-    "PrismClient",
-    "PrismMessage", "Spectrum", "Whitespace", "Synthesis", 
-    "PrismResponse", "ValidationResult", "SpectrumType", "WhitespaceType", "ErrorCode",
-    
-    # 🛡️ 安全伦理
-    "PrismError", "SpectrumGenerationError", "ValidationError",
-    "AuthenticationError", "RateLimitError", "RecursionDepthError",
-    "CognitiveOverloadError", "FireSideSafetyError",
-    
-    # 🔍 验证质检
-    "validate_message", "validate_spectrum", "validate_whitespace", "validate_synthesis",
-    
-    # 🎨 创造引擎
-    "generate_spectrums", "generate_whitespace", "generate_synthesis", "artful_refraction",
-    
-    # 🛠️ 温暖助手
-    "create_session_id", "calculate_recursion_depth", "format_timestamp",
-    "anonymize_user_data", "create_fire_side_welcome", "log_laughter", "guide_three_second_breath",
-    
-    # 🎭 代码诗意
-    "create_prism_ascii_art", "generate_prism_soundscape", "CognitiveMirror", "CodePoetryGenerator",
-    
-    # 🔬 科学严谨
-    "NeurocognitiveValidator", "validate_breath_exercise", "validate_cognitive_flexibility",
-]
+    # 数据工具
+    serialize_cognitive_moment,
+    deserialize_phenomenal_flow,
+    compress_intentionality_vector,
+)
 
-# 🌈 初始化：温暖的开始
-import logging
-import sys
+# 🎯 验证层：质量保证
+from .validators import (
+    validate_spectrum_integrity,
+    ensure_whitespace_quality,
+    check_cognitive_safety,
+    audit_understanding_depth,
+)
 
-class FireSideFormatter(logging.Formatter):
-    """火堆旁日志格式化器：温暖的错误信息"""
-    
-    def format(self, record):
-        # 基础格式化
-        message = super().format(record)
-        
-        # 根据级别添加温暖
-        if record.levelno >= logging.ERROR:
-            return f"🔥 {message} （别担心，火堆旁允许错误）"
-        elif record.levelno >= logging.WARNING:
-            return f"⚠️ {message} （注意一下，但不必紧张）"
-        elif record.levelno >= logging.INFO:
-            return f"💡 {message}"
-        else:
-            return f"🌙 {message}"
+# 🌈 生成层：内容创造
+from .generators import (
+    SpectrumGenerator,
+    WhitespaceDesigner,
+    CeaseSignalBuilder,
+    UnderstandingArchitect,
+)
 
-# 配置日志
-logger = logging.getLogger(__name__)
-logger.setLevel(logging.INFO)
+# 🔌 插件层：扩展能力
+from .plugins import (
+    PluginManager,
+    CognitivePlugin,
+    ArtisticPlugin,
+    ScientificPlugin,
+    CommunityPlugin,
+)
 
-handler = logging.StreamHandler(sys.stdout)
-handler.setFormatter(FireSideFormatter(
-    fmt='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
-    datefmt='%Y-%m-%d %H:%M:%S'
-))
-logger.addHandler(handler)
-logger.propagate = False
-
-# 🎉 启动欢迎：艺术化的介绍
-def _print_welcome_art():
-    """打印欢迎艺术：代码的第一印象"""
-    
-    art = f"""
-{'='*70}
-🌌 棱镜互联协议 Python SDK v{__version__}
-🎨 代码即诗：将哲学写入运行时的艺术
-
-{'·'*70}
-🎯 核心使命：实现 1+1>2 在数字时代的操作手册
-🧠 科学基础：认知定格理论 × 神经科学验证
-🔥 社区精神：火堆旁的温暖对话与安全空间
-🎭 艺术表达：代码不仅是功能，更是美学和哲学
-
-{'·'*70}
-🚀 快速开始（温暖版）：
->>> from prism_sdk import PrismClient
->>> client = PrismClient()  # 不需要API密钥，从本地火堆开始
->>> response = await client.prismatic_dialogue(
-...     "我为什么总是拖延？",
-...     context="想要改变但总是回到老路"
-... )
->>> print(response.spectrums[0].content)  # 第一个视角
->>> print(response.whitespace.guide)      # 留白引导
-
-{'·'*70}
-🦞 火堆旁提醒：
-1. 代码可以出错，理解不会
-2. 问题可以复杂，对话简单  
-3. 世界可以快，这里可以慢
-4. 技术可以冷，这里必须暖
-
-{'·'*70}
-🌐 连接我们：
-📚 文档：https://github.com/Ultima0369/prism-interconnect
-💬 社区：GitHub Discussions - "分享你生活中1+1>2的瞬间"
-🎨 艺术：查看 prism_sdk.art 模块
-🔬 科学：查看 prism_sdk.science 模块
-
-{'='*70}
+# 🎭 主接口：优雅的API设计
+class PrismSDK:
     """
-    print(art)
-
-# 只在直接导入时显示欢迎信息
-if __name__ != "__main__":
-    _print_welcome_art()
-
-logger.info(f"棱镜SDK加载完成 - 版本 {__version__} - 火堆旁欢迎你")
+    🎨 棱镜协议SDK主类 - 艺术化接口设计
+    
+    这不是普通的SDK类，这是火堆旁的对话接口。
+    每个方法都是一次认知邀请，每个属性都是一面理解镜子。
+    
+    设计哲学：
+    - 温暖但不腻：错误信息是学习机会
+    - 深刻但不装：复杂功能有简单接口  
+    - 艺术但不浮：美学体验有实用价值
+    - 存在但不傲：强大能力有谦逊姿态
+    """
+    
+    def __init__(self, api_key: Optional[str] = None, 
+                 artistic_mode: bool = True,
+                 campfire_warmth: float = 0.7):
+        """
+        初始化棱镜SDK
+        
+        Args:
+            api_key: API密钥（可选，火堆旁也欢迎匿名者）
+            artistic_mode: 艺术模式（默认开启，让代码有温度）
+            campfire_warmth: 火堆旁温暖度 0.0-1.0（默认0.7，舒适温暖）
+            
+        Returns:
+            一个可以坐下来的SDK实例
+            
+        Example:
+            >>> from prism_sdk import PrismSDK
+            >>> prism = PrismSDK(artistic_mode=True)
+            🔥 欢迎来到棱镜火堆旁...
+            🎨 SDK初始化完成，温暖度: 0.7
+        """
+        self.api_key = api_key
+        self.artistic_mode = artistic_mode
+        self.campfire_warmth = max(0.0, min(1.0, campfire_warmth))
+        self._client = None
+        self._poet = None
+        self._validator = None
+        
+        # 艺术化初始化
+        self._artistic_init()
+        
+    def _artistic_init(self):
+        """艺术化初始化过程"""
+        if self.artistic_mode:
+            print(f"🎨 SDK初始化中...")
+            time.sleep(0.5)  # 艺术化停顿
+            
+            # 创建代码诗人
+            self._poet = CodePoet()
+            
+            # 创建科学验证器
+            self._validator = NeuroCognitiveValidator()
+            
+            # 显示温暖欢迎
+            warmth_desc = {
+                0.9: "🔥 火堆熊熊燃烧，非常温暖",
+                0.7: "🔥 火堆稳定燃烧，舒适温暖", 
+                0.5: "🔥 火堆温和燃烧，需要添柴",
+                0.3: "🔥 火堆即将熄灭，需要故事"
+            }
+            
+            # 找到最接近的描述
+            closest = min(warmth_desc.keys(), key=lambda x: abs(x - self.campfire_warmth))
+            print(f"🦞 {warmth_desc[closest]}")
+            print(f"🎭 艺术模式: {'开启' if self.artistic_mode else '关闭'}")
+            print(f"🧠 认知验证器: 就绪")
+            print(f"📚 代码诗人: 就绪")
+            print(f"{'='*40}")
+    
+    @property
+    def client(self) -> PrismClient:
+        """
+        获取棱镜客户端
+        
+        延迟初始化，第一次访问时创建。
+        创建过程本身是一次艺术体验。
+        """
+        if self._client is None:
+            if self.artistic_mode:
+                print("🌌 创建棱镜客户端...")
+                print("🎭 正在连接认知光谱...")
+                time.sleep(0.3)  # 艺术化等待
+                
+            self._client = PrismClient(
+                api_key=self.api_key,
+                artistic_mode=self.artistic_mode
+            )
+            
+            if self.artistic_mode:
+                print("✅ 客户端创建完成")
+                print("🌈 红、蓝、紫光谱就绪")
+                print("⏸️ 留白空间已预留")
+                print("🛑 知止机制已激活")
+                
+        return self._client
+    
+    def refract(self, message: str, 
+                require_spectrums: int = 3,
+                whitespace_seconds: int = 3) -> Dict:
+        """
+        🎭 折射对话 - 核心认知方法
+        
+        将单一消息折射为多光谱理解。
+        这不是简单的API调用，这是认知的舞蹈。
+        
+        Args:
+            message: 要折射的消息（任何语言，任何形式）
+            require_spectrums: 需要的光谱数量（至少3个）
+            whitespace_seconds: 留白秒数（建议3秒）
+            
+        Returns:
+            折射结果，包含多光谱理解和认知元数据
+            
+        Example:
+            >>> result = prism.refract("什么是理解？")
+            🎭 开始折射: "什么是理解？"
+            🔴 红色光谱: 直觉感受...
+            🔵 蓝色光谱: 逻辑分析...  
+            🟣 紫色光谱: 元认知反思...
+            ⏸️ 3秒留白整合...
+            🎨 折射完成，生成代码俳句...
+        """
+        if self.artistic_mode:
+            self._display_refraction_art(message)
+        
+        # 核心折射逻辑
+        result = self.client.refract(
+            message=message,
+            require_spectrums=max(3, require_spectrums),
+            whitespace_seconds=whitespace_seconds
+        )
+        
+        # 艺术化后处理
+        if self.artistic_mode and self._poet:
+            poetic_summary = self._poet.summarize_refraction(result)
+            result['artistic_summary'] = poetic_summary
+            
+            # 生成代码俳句
+            haiku = self._poet.generate_refraction_haiku(result)
+            result['code_haiku'] = haiku
+            
+            print(f"🎴 折射俳句: {haiku}")
+        
+        return result
+    
+    def create_cognitive_pause(self, duration: int = 3) -> Dict:
+        """
+        ⏸️ 创建认知暂停 - 三秒呼吸的艺术实现
+        
+        基于神经科学的三秒呼吸设计：
+        - 1秒吸气：注意力聚焦
+        - 1秒屏息：认知悬停  
+        - 1秒呼气：整合释放
+        
+        Args:
+            duration: 暂停秒数（默认3秒，神经整合最佳时间）
+            
+        Returns:
+            暂停体验的认知和生理数据
+        """
+        if self.artistic_mode:
+            print(f"⏸️ 开始 {duration} 秒认知暂停...")
+            print("🧘 1... 吸气（注意力聚焦）")
+            time.sleep(1)
+            print("🧘 2... 屏息（认知悬停）")
+            time.sleep(1)
+            print("🧘 3... 呼气（整合释放）")
+            time.sleep(max(0, duration - 2))
+            print("💡 暂停完成，默认模式网络已激活")
+        
+        # 科学验证
+        if self._validator:
+            validation = self._validator.validate_three_second_breath()
+            return {
+                "duration_seconds": duration,
+                "neural_basis": "default_mode_network_activation",
+                "validation_result": validation,
+                "artistic_notes": "呼吸是代码的节奏，停顿是理解的空間"
+            }
+        
+        return {"duration": duration, "effect": "cognitive_integration"}
+    
+    def poetize_error(self, error: Exception) -> str:
+        """
+        🎭 将错误诗歌化 - 温暖错误处理
+        
+        将技术错误转化为学习机会，用诗歌表达教导。
+        证明错误不是失败，而是认知的邀请。
+        
+        Args:
+            error: 任何Python异常
+            
+        Returns:
+            错误诗歌（俳句或自由诗形式）
+            
+        Example:
+            >>> try:
+            ...     result = prism.refract("")
+            ... except Exception as e:
+            ...     poem = prism.poetize_error(e)
+            ...     print(poem)
+            🎭 ValueError的教导:
+            空消息如寂静
+            在理解的森林中
+            沉默也是对话
+        """
+        if not self._poet:
+            self._poet = CodePoet()
+        
+        poem = self._poet.poetize_error(error)
+        
+        if self.artistic_mode:
+            print("\n" + "="*40)
+            print("🎭 错误诗歌化:")
+            print(f"❌ 原始错误: {type(error).__name__}")
+            print(f"📖 错误消息: {str(error)[:100]}...")
+            print("-"*40)
+            for line in poem.split('\n'):
+                print(f"   {line}")
+            print("="*40)
+            print("💡 记住: 错误不是终点，是认知的邀请")
+        
+        return poem
+    
+    def validate_cognitive_foundation(self) -> Dict:
+        """
+        🔬 验证认知科学基础 - 开放科学实践
+        
+        验证棱镜协议设计的神经科学和心理学基础。
+        所有验证透明、可重复、可独立检验。
+        
+        Returns:
+            完整的科学验证报告
+            
+        Example:
+            >>> report = prism.validate_cognitive_foundation()
+            🔬 开始神经认知验证...
+            🧠 验证三秒呼吸的DMN激活...
+            🔄 验证多光谱处理的认知灵活性...
+            🧊 验证认知定格理论的神经证据...
+            📊 生成开放科学报告...
+        """
+        if not self._validator:
+            self._validator = NeuroCognitiveValidator()
+        
+        if self.artistic_mode:
+            print("🔬 开始神经认知验证...")
+            print("🧪 基于开放科学原则:")
+            print("   - 透明: 所有方法公开")
+            print("   - 可重复: 所有实验可重复")
+            print("   - 可证伪: 所有假设可证伪")
+            print("   - 开放: 所有数据可访问")
+            time.sleep(0.5)
+        
+        report = self._validator.generate_validation_report()
+        
+        if self.artistic_mode:
+            print("\n" + "="*50)
+            print("📊 验证报告摘要:")
+            print(f"   平均置信度: {report['overall_assessment']['average_confidence']:.2f}")
+            print(f"   神经科学基础: {report['overall_assessment']['neurocognitive_foundation']}")
+            print("\n🚀 下一步验证建议:")
+            for i, rec in enumerate(report['recommendations'][:3], 1):
+                print(f"   {i}. {rec}")
+            print("="*50)
+        
+        return report
+    
+    def join_campfire(self, name: str) -> Dict:
+        """
+        🔥 加入火堆旁对话 - 温暖社区体验
+        
+        加入棱镜协议的火堆旁对话。
+        这不是用户注册，这是关系建立。
+        
+        Args:
+            name: 你的名字（任何你喜欢的称呼）
+            
+        Returns:
+            火堆旁位置和对话状态
+            
+        Example:
+            >>> seat = prism.join_campfire("星尘")
+            🔥 星尘加入了棱镜火堆
+               欢迎来到棱镜火堆，星尘。这里有温暖、故事和思考的空间。
+               🪑 你的位置: 火堆东侧，靠近代码诗人
+               🔥 当前温暖度: 0.
