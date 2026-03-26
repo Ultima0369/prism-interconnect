@@ -448,4 +448,7 @@ class PrismOpenClawSkill:
             "configuration": {
                 "artistic_mode": self.artistic_mode,
                 "enable_campfire": self.enable_campfire,
-                "warmth_level": self.prism.campfire_warmth if hasattr(self.prism, 'campfire_warmth') else
+                "warmth_level": self.prism.campfire_warmth if hasattr(self.prism, 'campfire_warmth') else 0.7
+            },
+            "generated_at": datetime.now().isoformat()
+        }

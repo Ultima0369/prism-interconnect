@@ -451,4 +451,12 @@ class PrismClient:
                 "average_understanding_depth": sum(trend) / len(trend) if trend else 0,
                 "trend_direction": "上升" if len(trend) > 1 and trend[-1] > trend[0] else "稳定"
             },
-            "artistic_config":
+            "artistic_config": {
+                "enable_poetic_errors": self.artistic_config.enable_poetic_errors,
+                "enable_cognitive_pauses": self.artistic_config.enable_cognitive_pauses,
+                "enable_spectrum_art": self.artistic_config.enable_spectrum_art,
+                "warmth_level": self.artistic_config.warmth_level,
+                "response_art_form": self.artistic_config.response_art_form
+            },
+            "generated_at": datetime.now().isoformat()
+        }
