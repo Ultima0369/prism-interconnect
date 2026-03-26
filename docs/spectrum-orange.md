@@ -1,4 +1,4 @@
-# 橙色光谱 (Orange Spectrum)
+﻿# 橙色光谱 (Orange Spectrum)
 
 ## 概述
 

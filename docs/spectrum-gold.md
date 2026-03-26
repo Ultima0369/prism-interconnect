@@ -1,4 +1,4 @@
-# 金色光谱 (Gold Spectrum)
+﻿# 金色光谱 (Gold Spectrum)
 
 ## 概述
 
