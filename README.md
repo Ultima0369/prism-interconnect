@@ -34,6 +34,7 @@
 [![GitHub stars](https://img.shields.io/github/stars/Ultima0369/prism-interconnect?style=social)]()
 [![Protocol Version](https://img.shields.io/badge/Protocol-v1.1.0-blue)]()
 [![Python](https://img.shields.io/badge/Python-3.8%2B-blue)]()
+[![Laughter](https://img.shields.io/badge/laughter-1+1>2-orange)]()
 
 **PIP 是一个面向意义层的通信协议**，允许任何智能体（人、AI、群体）以结构化的方式交换多元认知视角，并在留白中完成内省。它不提供答案，只折射光谱。
 
