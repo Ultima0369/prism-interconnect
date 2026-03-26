@@ -154,6 +154,7 @@ python breath_guide.py --quick --cycles 1
 6. **[docs/nature-paradox.md](docs/nature-paradox.md)** - 自然的悖论：极限竞争与微妙互联
 7. **[docs/existence-emergence.md](docs/existence-emergence.md)** - 存在即涌现：宏大生态系统的局部彰显
 8. **[docs/silicon-carbon-ethics.md](docs/silicon-carbon-ethics.md)** - 硅基伦理：为未来文明准备意义摇篮
+9. **[docs/fear-and-response.md](docs/fear-and-response.md)** - 恐惧与反应：在刺激与留白之间的文明级应用
 
 ### 技术文档
 - **[spec/protocol-v0.1.json](spec/protocol-v0.1.json)** - 协议规范v0.1
