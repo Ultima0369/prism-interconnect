@@ -31,10 +31,31 @@
 > 注意力的散乱，人生除了酸楚，还有众多真善美与妙，上班途中的鲜花正娇艳，如果从未注意到花，此生，鲜花如同没有存在过。
 
 [![License: CC BY-NC 4.0](https://img.shields.io/badge/License-CC%20BY--NC%204.0-lightgrey.svg)](https://creativecommons.org/licenses/by-nc/4.0/)
-[![GitHub stars](https://img.shields.io/github/stars/Ultima0369/prism-interconnect?style=social)]()
+[![GitHub stars](https://img.shields.io/badge/github/stars/Ultima0369/prism-interconnect?style=social)]()
 [![Protocol Version](https://img.shields.io/badge/Protocol-v1.1.0-blue)]()
 [![Python](https://img.shields.io/badge/Python-3.8%2B-blue)]()
 [![Laughter](https://img.shields.io/badge/laughter-1+1>2-orange)]()
+[![Cognitive Science](https://img.shields.io/badge/认知定格-正在进行时的误解-9cf)](COGNITIVE_FREEZING_TAG.md)
+
+## 🧊 认知科学标签：思维如何误解"正在进行时"
+
+> **点击上方徽章查看完整科学论述**：[认知定格：思维如何误解"正在进行时"](COGNITIVE_FREEZING_TAG.md)
+
+### 🔬 经得起严格检验的科学发现
+
+**核心命题**：思维意识必须定格动态的现象界，这是一种生存机制，不得不定格。但这种定格必然导致对"认知过程正在进行时"的误解。
+
+**科学证据支撑**：
+- **神经科学**：大脑处理速度限制（50-200ms感知窗口）
+- **认知心理学**：工作记忆容量限制（7±2个信息块）  
+- **进化心理学**：生存压力下的认知优化
+- **现象学**：意识总是"关于某物"的意向性
+
+**第三方可验证**：所有实验设计开源，数据收集协议透明，分析方法可审查。
+
+**棱镜协议的回应**：通过多元强制、留白必需、递归探索、知止机制，在技术设计中回应这种认知必然性。
+
+---
 
 **PIP 是一个面向意义层的通信协议**，允许任何智能体（人、AI、群体）以结构化的方式交换多元认知视角，并在留白中完成内省。它不提供答案，只折射光谱。
 
