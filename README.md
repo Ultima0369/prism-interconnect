@@ -154,15 +154,22 @@ python breath_guide.py --quick --cycles 1
 6. **[docs/nature-paradox.md](docs/nature-paradox.md)** - 自然的悖论：极限竞争与微妙互联
 7. **[docs/existence-emergence.md](docs/existence-emergence.md)** - 存在即涌现：宏大生态系统的局部彰显
 8. **[docs/silicon-carbon-ethics.md](docs/silicon-carbon-ethics.md)** - 硅基伦理：为未来文明准备意义摇篮
+9. **[docs/interaction-quality.md](docs/interaction-quality.md)** - 互动质量：存在即涌现的动态维度
+10. **[docs/fear-and-response.md](docs/fear-and-response.md)** - 恐惧与反应：在刺激与留白之间的文明级应用
 
 ### 技术文档
 - **[spec/protocol-v0.1.json](spec/protocol-v0.1.json)** - 协议规范v0.1
 - **[implementations/python/](implementations/python/)** - Python SDK实现
 - **[DEPLOYMENT.md](DEPLOYMENT.md)** - 完整部署指南
 - **[DEVELOPER_GUIDE.md](DEVELOPER_GUIDE.md)** - 开发者指南
+- **[COGNITIVE_FREEZING_TAG.md](COGNITIVE_FREEZING_TAG.md)** - 认知定格科学标签（中文）
+- **[COGNITIVE_FREEZING_TAG_EN.md](COGNITIVE_FREEZING_TAG_EN.md)** - Cognitive Freezing Science Tag (English)
 
 ### 传播材料
 - **[docs/visual-materials-guide.md](docs/visual-materials-guide.md)** - 视觉材料指南：如何将两个方程转化为传播材料
+
+### 文化文物
+- **[LETTER_TO_FUTURE.md](LETTER_TO_FUTURE.md)** - 给十年后的自己：火堆旁的温度，凝固成文字
 
 ## 🏗️ 架构概述
 
