@@ -162,6 +162,8 @@ python breath_guide.py --quick --cycles 1
 - **[implementations/python/](implementations/python/)** - Python SDK实现
 - **[DEPLOYMENT.md](DEPLOYMENT.md)** - 完整部署指南
 - **[DEVELOPER_GUIDE.md](DEVELOPER_GUIDE.md)** - 开发者指南
+- **[COGNITIVE_FREEZING_TAG.md](COGNITIVE_FREEZING_TAG.md)** - 认知定格科学标签（中文）
+- **[COGNITIVE_FREEZING_TAG_EN.md](COGNITIVE_FREEZING_TAG_EN.md)** - Cognitive Freezing Science Tag (English)
 
 ### 传播材料
 - **[docs/visual-materials-guide.md](docs/visual-materials-guide.md)** - 视觉材料指南：如何将两个方程转化为传播材料
