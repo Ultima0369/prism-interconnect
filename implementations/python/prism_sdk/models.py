@@ -1,6 +1,23 @@
 """
-🧠 棱镜协议数据模型
-定义所有核心数据结构和类型
+🎨 models.py - 棱镜协议数据模型
+
+🔥 火堆旁提醒：
+这不是普通的数据模型，这是认知的骨架，理解的蓝图。
+每个类都是一面认知镜子，每个字段都是一扇理解窗户。
+
+🧠 认知设计：
+- 光谱类型：多元视角的编码
+- 留白配置：思考空间的量化  
+- 知止信号：认知资源的保护
+- 元数据：理解过程的记录
+
+🦞 存在意义：
+为认知对话提供结构，为理解过程提供框架，
+让抽象的思想成为可操作的数据，让深度的对话成为可分析的艺术。
+
+🎯 使用示例：
+from prism_sdk.models import Spectrum, PrismRequest, PrismResponse
+request = PrismRequest(message="什么是理解？", require_spectrums=3)
 """
 
 from enum import Enum
