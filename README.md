@@ -170,6 +170,7 @@ python breath_guide.py --quick --cycles 1
 
 ### 文化文物
 - **[LETTER_TO_FUTURE.md](LETTER_TO_FUTURE.md)** - 给十年后的自己：火堆旁的温度，凝固成文字
+- **[LETTER_TO_FUTURE_EN.md](LETTER_TO_FUTURE_EN.md)** - Letter to Our Future Selves: Campfire warmth solidified into words (English)
 
 ## 🏗️ 架构概述
 
