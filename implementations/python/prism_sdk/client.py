@@ -1,805 +1,454 @@
 """
-🧠 棱镜协议客户端
-核心通信接口实现
+🎭 棱镜协议客户端 - 艺术化实现
+🔥 这不是普通的HTTP客户端，这是火堆旁的对话使者
+
+设计哲学：
+1. 每个请求都是一次认知邀请
+2. 每个响应都是一面理解镜子  
+3. 每个错误都是一次学习机会
+4. 每个连接都是一次关系建立
+
+艺术承诺：
+- 温暖的错误信息
+- 诗意的API调用
+- 美学的响应处理
+- 存在的连接体验
 """
 
 import asyncio
-import aiohttp
 import json
-import logging
-from typing import Optional, Dict, Any, List, Union
-from datetime import datetime, timedelta
-from uuid import uuid4
+import time
+from typing import Dict, List, Optional, Any, Union
+from datetime import datetime
+import aiohttp
+from dataclasses import dataclass, asdict
 
+from .exceptions import (
+    PrismConnectionError,
+    SpectrumGenerationError,
+    WhitespaceTimeoutError,
+    CeaseSignalReceived,
+    PrismPoeticError,
+)
 from .models import (
-    PrismMessage,
+    PrismRequest,
     PrismResponse,
     Spectrum,
-    Whitespace,
-    Synthesis,
-    SessionConfig,
-    UserPreferences,
-    ValidationResult,
-    SpectrumType,
-    WhitespaceType,
-    ErrorCode
+    WhitespaceConfig,
+    CeaseSignal,
+    CognitiveMetadata,
 )
-from .exceptions import (
-    PrismError,
-    SpectrumGenerationError,
-    ValidationError,
-    AuthenticationError,
-    RateLimitError,
-    RecursionDepthError
-)
-from .validators import validate_message
-from .generators import generate_spectrums, generate_whitespace, generate_synthesis
-from .utils import create_session_id, format_timestamp, anonymize_user_data
+from .validators import validate_spectrum_integrity
+from .utils import create_cognitive_pause, measure_understanding_depth
+
+
+@dataclass
+class ArtisticConfig:
+    """艺术化配置"""
+    enable_poetic_errors: bool = True
+    enable_cognitive_pauses: bool = True
+    enable_spectrum_art: bool = True
+    warmth_level: float = 0.7  # 0.0-1.0
+    response_art_form: str = "haiku"  # haiku, free_verse, visual
 
 
 class PrismClient:
-    """棱镜协议客户端"""
+    """
+    🎭 棱镜协议客户端 - 艺术化同步实现
     
-    def __init__(
-        self,
-        api_key: Optional[str] = None,
-        endpoint: str = "https://api.prism.dev/v1",
-        session_config: Optional[SessionConfig] = None,
-        user_preferences: Optional[UserPreferences] = None,
-        timeout: int = 30,
-        max_retries: int = 3
-    ):
+    这不是冰冷的HTTP客户端，这是温暖的对话伙伴。
+    每个方法调用都包含认知关怀和艺术表达。
+    
+    火堆旁设计原则：
+    - 连接如握手：温暖而坚定
+    - 请求如邀请：尊重而期待  
+    - 响应如礼物：精心而实用
+    - 错误如老师：严格而仁慈
+    """
+    
+    def __init__(self, 
+                 api_key: Optional[str] = None,
+                 base_url: str = "https://api.prismprotocol.ai/v1",
+                 artistic_config: Optional[ArtisticConfig] = None,
+                 session_timeout: int = 30):
         """
         初始化棱镜客户端
         
         Args:
-            api_key: API密钥，本地模式可为None
-            endpoint: API端点URL
-            session_config: 会话配置
-            user_preferences: 用户偏好
-            timeout: 请求超时时间(秒)
-            max_retries: 最大重试次数
+            api_key: API密钥（火堆旁也欢迎匿名对话）
+            base_url: API基础URL
+            artistic_config: 艺术化配置
+            session_timeout: 会话超时（秒）
+            
+        Example:
+            >>> client = PrismClient(
+            ...     artistic_config=ArtisticConfig(
+            ...         enable_poetic_errors=True,
+            ...         warmth_level=0.8
+            ...     )
+            ... )
+            🎭 棱镜客户端初始化...
+            🔥 温暖度: 0.8
+            🎨 诗意错误: 启用
+            🧘 认知暂停: 启用
         """
         self.api_key = api_key
-        self.endpoint = endpoint.rstrip('/')
-        self.session_config = session_config or SessionConfig()
-        self.user_preferences = user_preferences or UserPreferences()
-        self.timeout = timeout
-        self.max_retries = max_retries
-        
-        # 会话状态
-        self.session_id = create_session_id()
-        self.recursion_depth = 0
-        self.message_history: List[PrismResponse] = []
-        
-        # HTTP客户端
-        self.session: Optional[aiohttp.ClientSession] = None
-        self.headers = {
-            "User-Agent": f"Prism-SDK/1.0.0",
-            "Content-Type": "application/json",
-            "Accept": "application/json"
-        }
-        if api_key:
-            self.headers["Authorization"] = f"Bearer {api_key}"
-        
-        # 性能监控
-        self.metrics = {
-            "total_requests": 0,
-            "successful_requests": 0,
-            "failed_requests": 0,
-            "total_latency_ms": 0,
-            "last_request_time": None
+        self.base_url = base_url.rstrip('/')
+        self.session_timeout = session_timeout
+        self.artistic_config = artistic_config or ArtisticConfig()
+        self._session = None
+        self._cognitive_state = {
+            "refractions_count": 0,
+            "total_whitespace_seconds": 0,
+            "last_refraction_time": None,
+            "understanding_depth_trend": []
         }
         
-        # 日志
-        self.logger = logging.getLogger(__name__)
-        
-        self.logger.info(f"棱镜客户端初始化完成 - 会话ID: {self.session_id}")
+        self._artistic_init()
     
-    async def __aenter__(self):
-        """异步上下文管理器入口"""
-        await self.connect()
-        return self
+    def _artistic_init(self):
+        """艺术化初始化"""
+        if self.artistic_config.enable_spectrum_art:
+            print("🎭 棱镜客户端初始化中...")
+            time.sleep(0.3)
+            
+            warmth_desc = {
+                0.9: "🔥 非常温暖",
+                0.7: "🔥 舒适温暖",
+                0.5: "🔥 温和温暖", 
+                0.3: "🔥 需要添柴"
+            }
+            
+            closest = min(warmth_desc.keys(), 
+                         key=lambda x: abs(x - self.artistic_config.warmth_level))
+            
+            print(f"🦞 温暖度: {self.artistic_config.warmth_level:.1f} ({warmth_desc[closest]})")
+            print(f"🎨 诗意错误: {'启用' if self.artistic_config.enable_poetic_errors else '禁用'}")
+            print(f"🧘 认知暂停: {'启用' if self.artistic_config.enable_cognitive_pauses else '禁用'}")
+            print(f"🌈 光谱艺术: {'启用' if self.artistic_config.enable_spectrum_art else '禁用'}")
+            print(f"{'='*40}")
     
-    async def __aexit__(self, exc_type, exc_val, exc_tb):
-        """异步上下文管理器出口"""
-        await self.close()
-    
-    async def connect(self):
-        """连接到棱镜服务"""
-        if self.session is None or self.session.closed:
-            timeout = aiohttp.ClientTimeout(total=self.timeout)
-            self.session = aiohttp.ClientSession(
-                headers=self.headers,
-                timeout=timeout,
-                connector=aiohttp.TCPConnector(limit=100)
+    def _get_session(self):
+        """获取或创建会话（延迟初始化）"""
+        if self._session is None:
+            self._session = aiohttp.ClientSession(
+                timeout=aiohttp.ClientTimeout(total=self.session_timeout),
+                headers=self._get_headers()
             )
-            self.logger.debug("HTTP会话已创建")
+        return self._session
     
-    async def close(self):
-        """关闭连接"""
-        if self.session and not self.session.closed:
-            await self.session.close()
-            self.session = None
-            self.logger.debug("HTTP会话已关闭")
+    def _get_headers(self) -> Dict[str, str]:
+        """获取请求头"""
+        headers = {
+            "User-Agent": f"PrismPythonSDK/2.0.0 (ArtisticMode)",
+            "Content-Type": "application/json",
+            "X-Prism-Philosophy": "code-as-poetry, protocol-as-art, technology-as-warmth",
+            "X-Prism-Campfire": "join-us-by-the-fire",
+        }
+        
+        if self.api_key:
+            headers["Authorization"] = f"Bearer {self.api_key}"
+        
+        return headers
     
-    async def prismatic_dialogue(
-        self,
-        query: str,
-        context: Optional[Dict[str, Any]] = None,
-        min_spectrums: Optional[int] = None,
-        max_spectrums: Optional[int] = None,
-        enable_synthesis: Optional[bool] = None,
-        recursion_path: Optional[List[str]] = None
-    ) -> PrismResponse:
+    def refract(self, 
+                message: str,
+                require_spectrums: int = 3,
+                whitespace_seconds: int = 3,
+                enable_cease: bool = True,
+                max_recursion_depth: int = 3) -> Dict[str, Any]:
         """
-        执行棱镜对话
+        🎭 折射对话 - 核心认知方法
+        
+        将单一消息折射为多光谱理解。
+        这不是API调用，这是认知的舞蹈。
         
         Args:
-            query: 用户查询
-            context: 对话上下文
-            min_spectrums: 最小光谱数量
-            max_spectrums: 最大光谱数量
-            enable_synthesis: 是否启用合成
-            recursion_path: 递归路径（用于深度探索）
+            message: 要折射的消息
+            require_spectrums: 需要的光谱数量（至少3个）
+            whitespace_seconds: 留白秒数
+            enable_cease: 是否启用知止机制
+            max_recursion_depth: 最大递归深度
             
         Returns:
-            PrismResponse: 棱镜响应
+            折射结果，包含艺术化元数据
             
         Raises:
-            PrismError: 棱镜协议错误
-            ValidationError: 验证错误
-            AuthenticationError: 认证错误
-            RateLimitError: 速率限制错误
+            PrismPoeticError: 诗意错误（当艺术模式启用时）
+            SpectrumGenerationError: 光谱生成错误
+            WhitespaceTimeoutError: 留白超时错误
+            CeaseSignalReceived: 知止信号接收
         """
-        start_time = datetime.now()
+        # 艺术化开始
+        if self.artistic_config.enable_spectrum_art:
+            self._display_refraction_start(message, require_spectrums)
+        
+        # 创建请求
+        request = PrismRequest(
+            message=message,
+            require_spectrums=max(3, require_spectrums),
+            whitespace_config=WhitespaceConfig(
+                duration_seconds=whitespace_seconds,
+                enable_integration=True,
+                enable_reflection=True,
+                enable_creation=True
+            ),
+            cease_config=CeaseSignal(
+                enabled=enable_cease,
+                max_recursion_depth=max_recursion_depth,
+                safety_threshold=0.8
+            ) if enable_cease else None
+        )
         
         try:
-            # 1. 准备请求
-            request_data = await self._prepare_request(
-                query=query,
-                context=context,
-                min_spectrums=min_spectrums,
-                max_spectrums=max_spectrums,
-                enable_synthesis=enable_synthesis,
-                recursion_path=recursion_path
-            )
+            # 执行折射（同步包装异步）
+            response = asyncio.run(self._async_refract(request))
             
-            # 2. 验证请求
-            validation_result = validate_message(request_data["message"])
-            if not validation_result.valid:
-                raise ValidationError(
-                    f"消息验证失败: {', '.join(validation_result.errors)}",
-                    validation_result
-                )
+            # 艺术化处理
+            if self.artistic_config.enable_spectrum_art:
+                self._display_refraction_result(response)
             
-            # 3. 发送请求
-            response_data = await self._send_request(request_data)
+            # 更新认知状态
+            self._update_cognitive_state(response)
             
-            # 4. 处理响应
-            response = await self._process_response(response_data, recursion_path)
+            # 添加艺术化元数据
+            artistic_metadata = self._generate_artistic_metadata(response)
+            response_dict = asdict(response)
+            response_dict['artistic_metadata'] = artistic_metadata
             
-            # 5. 更新状态
-            self.message_history.append(response)
-            self.recursion_depth = response.metadata.get("recursion_depth", 0)
-            
-            # 6. 更新指标
-            self._update_metrics(start_time, success=True)
-            
-            self.logger.info(
-                f"棱镜对话完成 - "
-                f"查询: {query[:50]}... "
-                f"光谱数: {len(response.message.spectrums)} "
-                f"递归深度: {self.recursion_depth} "
-                f"耗时: {(datetime.now() - start_time).total_seconds():.2f}s"
-            )
-            
-            return response
+            return response_dict
             
         except Exception as e:
-            self._update_metrics(start_time, success=False)
-            self.logger.error(f"棱镜对话失败: {str(e)}", exc_info=True)
+            # 艺术化错误处理
+            if self.artistic_config.enable_poetic_errors:
+                raise PrismPoeticError(
+                    original_error=e,
+                    context="refraction",
+                    artistic_form=self.artistic_config.response_art_form
+                )
             raise
     
-    async def recursive_explore(
-        self,
-        spectrum_index: int,
-        depth: int = 1,
-        max_depth: Optional[int] = None
-    ) -> PrismResponse:
-        """
-        递归探索特定光谱
+    async def _async_refract(self, request: PrismRequest) -> PrismResponse:
+        """异步折射实现"""
+        session = self._get_session()
         
-        Args:
-            spectrum_index: 要探索的光谱索引
-            depth: 探索深度
-            max_depth: 最大递归深度
-            
-        Returns:
-            PrismResponse: 递归探索结果
-            
-        Raises:
-            RecursionDepthError: 递归深度超限
-        """
-        if max_depth is None:
-            max_depth = self.session_config.max_recursion_depth
+        # 艺术化请求准备
+        if self.artistic_config.enable_spectrum_art:
+            print("🌌 准备折射请求...")
+            await asyncio.sleep(0.2)
         
-        # 检查递归深度
-        if self.recursion_depth + depth > max_depth:
-            raise RecursionDepthError(
-                f"递归深度超限: 当前{self.recursion_depth}, 尝试{depth}, 最大{max_depth}",
-                current_depth=self.recursion_depth,
-                attempted_depth=depth,
-                max_depth=max_depth
-            )
-        
-        # 获取要探索的光谱
-        if not self.message_history:
-            raise PrismError("没有历史消息可供递归探索")
-        
-        last_response = self.message_history[-1]
-        spectrums = last_response.message.spectrums
-        
-        if spectrum_index < 0 or spectrum_index >= len(spectrums):
-            raise PrismError(f"光谱索引无效: {spectrum_index}, 有效范围: 0-{len(spectrums)-1}")
-        
-        target_spectrum = spectrums[spectrum_index]
-        
-        # 构建递归查询
-        recursion_query = f"请深入探索这个视角: {target_spectrum.perspective}"
-        
-        # 构建递归路径
-        recursion_path = last_response.metadata.get("recursion_path", [])
-        recursion_path.append(target_spectrum.name)
-        
-        # 执行递归对话
-        response = await self.prismatic_dialogue(
-            query=recursion_query,
-            context={
-                "recursion_context": {
-                    "target_spectrum": target_spectrum.dict(),
-                    "previous_perspective": target_spectrum.perspective,
-                    "exploration_depth": depth
-                }
-            },
-            recursion_path=recursion_path
-        )
-        
-        # 更新递归深度
-        response.metadata["recursion_depth"] = self.recursion_depth + 1
-        response.metadata["recursion_path"] = recursion_path
-        response.metadata["parent_message_id"] = last_response.message_id
-        
-        self.logger.info(
-            f"递归探索完成 - "
-            f"目标光谱: {target_spectrum.name} "
-            f"新深度: {response.metadata['recursion_depth']}"
-        )
-        
-        return response
-    
-    async def batch_dialogue(
-        self,
-        queries: List[str],
-        parallel: bool = True,
-        max_concurrent: int = 5
-    ) -> List[PrismResponse]:
-        """
-        批量执行棱镜对话
-        
-        Args:
-            queries: 查询列表
-            parallel: 是否并行执行
-            max_concurrent: 最大并发数
-            
-        Returns:
-            List[PrismResponse]: 响应列表
-        """
-        if parallel:
-            # 并行执行
-            semaphore = asyncio.Semaphore(max_concurrent)
-            
-            async def limited_dialogue(query: str) -> PrismResponse:
-                async with semaphore:
-                    return await self.prismatic_dialogue(query)
-            
-            tasks = [limited_dialogue(query) for query in queries]
-            responses = await asyncio.gather(*tasks, return_exceptions=True)
-            
-            # 处理异常
-            results = []
-            for i, response in enumerate(responses):
-                if isinstance(response, Exception):
-                    self.logger.error(f"批量对话失败 - 查询{i}: {str(response)}")
-                    results.append(None)
-                else:
-                    results.append(response)
-            
-            return results
-        
-        else:
-            # 串行执行
-            results = []
-            for query in queries:
-                try:
-                    response = await self.prismatic_dialogue(query)
-                    results.append(response)
-                except Exception as e:
-                    self.logger.error(f"批量对话失败: {str(e)}")
-                    results.append(None)
-            
-            return results
-    
-    async def analyze_conversation_patterns(
-        self,
-        session_id: Optional[str] = None,
-        limit: int = 50
-    ) -> Dict[str, Any]:
-        """
-        分析对话模式
-        
-        Args:
-            session_id: 会话ID，None表示当前会话
-            limit: 分析的消息数量限制
-            
-        Returns:
-            Dict[str, Any]: 分析结果
-        """
-        target_session_id = session_id or self.session_id
-        messages = [m for m in self.message_history if m.session_id == target_session_id]
-        
-        if not messages:
-            return {"error": "没有找到相关对话记录"}
-        
-        # 限制分析数量
-        messages = messages[-limit:]
-        
-        # 分析模式
-        analysis = {
-            "session_id": target_session_id,
-            "total_messages": len(messages),
-            "spectrum_distribution": {},
-            "recursion_patterns": [],
-            "whitespace_usage": {},
-            "cognitive_shifts": [],
-            "timeline_analysis": {
-                "start_time": messages[0].timestamp if messages else None,
-                "end_time": messages[-1].timestamp if messages else None,
-                "message_frequency": len(messages) / (limit / 10)  # 每10条消息的频率
-            }
-        }
-        
-        # 分析光谱分布
-        spectrum_counts = {}
-        for msg in messages:
-            for spectrum in msg.message.spectrums:
-                spectrum_type = spectrum.type.value
-                spectrum_counts[spectrum_type] = spectrum_counts.get(spectrum_type, 0) + 1
-        
-        analysis["spectrum_distribution"] = spectrum_counts
-        
-        # 分析递归模式
-        recursion_depths = [msg.metadata.get("recursion_depth", 0) for msg in messages]
-        if recursion_depths:
-            analysis["recursion_patterns"] = {
-                "max_depth": max(recursion_depths),
-                "avg_depth": sum(recursion_depths) / len(recursion_depths),
-                "depth_changes": [
-                    recursion_depths[i+1] - recursion_depths[i] 
-                    for i in range(len(recursion_depths)-1)
-                ]
-            }
-        
-        # 分析留白使用
-        whitespace_types = {}
-        for msg in messages:
-            whitespace_type = msg.message.whitespace.type.value
-            whitespace_types[whitespace_type] = whitespace_types.get(whitespace_type, 0) + 1
-        
-        analysis["whitespace_usage"] = whitespace_types
-        
-        # 分析认知转移
-        if len(messages) >= 2:
-            cognitive_shifts = []
-            for i in range(1, len(messages)):
-                prev_spectrums = set(s.type.value for s in messages[i-1].message.spectrums)
-                curr_spectrums = set(s.type.value for s in messages[i].message.spectrums)
+        try:
+            # 发送请求
+            async with session.post(
+                f"{self.base_url}/refract",
+                json=asdict(request)
+            ) as response:
                 
-                shift = {
-                    "new_spectrums": list(curr_spectrums - prev_spectrums),
-                    "dropped_spectrums": list(prev_spectrums - curr_spectrums),
-                    "shift_magnitude": len(curr_spectrums.symmetric_difference(prev_spectrums))
-                }
-                cognitive_shifts.append(shift)
-            
-            analysis["cognitive_shifts"] = cognitive_shifts
-        
-        self.logger.info(f"对话模式分析完成 - 会话: {target_session_id}, 消息数: {len(messages)}")
-        
-        return analysis
+                if response.status != 200:
+                    error_data = await response.json()
+                    raise SpectrumGenerationError(
+                        f"折射失败: {error_data.get('error', '未知错误')}",
+                        status_code=response.status
+                    )
+                
+                data = await response.json()
+                
+                # 验证响应
+                if not validate_spectrum_integrity(data.get('spectrums', [])):
+                    raise SpectrumGenerationError("光谱完整性验证失败")
+                
+                # 转换为响应对象
+                prism_response = PrismResponse(
+                    spectrums=[
+                        Spectrum(
+                            type_=s['type'],
+                            content=s['content'],
+                            confidence=s.get('confidence', 0.7),
+                            artistic_expression=s.get('artistic_expression')
+                        ) for s in data['spectrums']
+                    ],
+                    whitespace_used=data.get('whitespace_used', False),
+                    cease_triggered=data.get('cease_triggered', False),
+                    cognitive_metadata=CognitiveMetadata(
+                        processing_time_ms=data.get('processing_time_ms', 0),
+                        understanding_depth=data.get('understanding_depth', 0.5),
+                        recursion_depth=data.get('recursion_depth', 0)
+                    )
+                )
+                
+                # 艺术化留白
+                if (request.whitespace_config and 
+                    request.whitespace_config.enable_integration and
+                    self.artistic_config.enable_cognitive_pauses):
+                    
+                    await self._artistic_whitespace(
+                        request.whitespace_config.duration_seconds
+                    )
+                
+                return prism_response
+                
+        except asyncio.TimeoutError:
+            raise WhitespaceTimeoutError(
+                f"请求超时 ({self.session_timeout}秒)",
+                suggestion="尝试增加超时时间或简化消息"
+            )
+        except aiohttp.ClientError as e:
+            raise PrismConnectionError(
+                f"连接错误: {str(e)}",
+                suggestion="检查网络连接或API端点"
+            )
     
-    async def _prepare_request(
-        self,
-        query: str,
-        context: Optional[Dict[str, Any]],
-        min_spectrums: Optional[int],
-        max_spectrums: Optional[int],
-        enable_synthesis: Optional[bool],
-        recursion_path: Optional[List[str]]
-    ) -> Dict[str, Any]:
-        """准备请求数据"""
-        # 确定光谱数量范围
-        min_spec = min_spectrums or self.session_config.min_spectrums
-        max_spec = max_spectrums or self.session_config.max_spectrums
-        min_spec = max(3, min(min_spec, max_spec))
+    async def _artistic_whitespace(self, duration: int):
+        """艺术化留白实现"""
+        if self.artistic_config.enable_spectrum_art:
+            print(f"⏸️ 开始 {duration} 秒艺术化留白...")
+            
+            # 三阶段留白
+            stages = [
+                ("🧘 吸气...", "注意力聚焦", 1),
+                ("🧘 屏息...", "认知悬停", 1),
+                ("🧘 呼气...", "整合释放", max(1, duration - 2))
+            ]
+            
+            for emoji, desc, stage_duration in stages:
+                print(f"{emoji} {desc}")
+                await asyncio.sleep(stage_duration)
+            
+            print("💡 留白完成，认知整合进行中...")
+    
+    def _display_refraction_start(self, message: str, spectrum_count: int):
+        """显示折射开始艺术"""
+        print("\n" + "="*50)
+        print("🎭 开始认知折射")
+        print("="*50)
+        print(f"📝 消息: {message[:100]}{'...' if len(message) > 100 else ''}")
+        print(f"🌈 光谱数量: {spectrum_count}")
+        print(f"🦞 温暖度: {self.artistic_config.warmth_level:.1f}")
+        print("-"*50)
         
-        # 确定是否启用合成
-        enable_synth = enable_synthesis if enable_synthesis is not None else self.session_config.enable_synthesis
+        # 显示光谱准备
+        spectrum_emojis = ["🔴", "🔵", "🟣", "🟢", "🟡", "🟠"]
+        for i in range(min(spectrum_count, len(spectrum_emojis))):
+            print(f"{spectrum_emojis[i]} 光谱 {i+1} 准备中...")
+            time.sleep(0.1)
+    
+    def _display_refraction_result(self, response: PrismResponse):
+        """显示折射结果艺术"""
+        print("\n" + "="*50)
+        print("✅ 折射完成")
+        print("="*50)
         
-        # 构建上下文
-        full_context = {
-            "user_state": {},
-            "environment": {
-                "timestamp": format_timestamp(),
-                "session_id": self.session_id,
-                "recursion_depth": self.recursion_depth
-            },
-            "preferences": self.user_preferences.dict() if self.user_preferences else {}
-        }
+        # 显示各光谱
+        for i, spectrum in enumerate(response.spectrums):
+            emoji = {"red": "🔴", "blue": "🔵", "purple": "🟣"}.get(
+                spectrum.type_, "🌈"
+            )
+            print(f"{emoji} {spectrum.type_.title()}光谱:")
+            print(f"   {spectrum.content[:80]}...")
+            print(f"   置信度: {spectrum.confidence:.2f}")
+            if i < len(response.spectrums) - 1:
+                print()
         
-        if context:
-            full_context.update(context)
+        # 显示元数据
+        print("\n📊 认知元数据:")
+        print(f"   处理时间: {response.cognitive_metadata.processing_time_ms}ms")
+        print(f"   理解深度: {response.cognitive_metadata.understanding_depth:.2f}")
+        print(f"   递归深度: {response.cognitive_metadata.recursion_depth}")
+        print(f"   留白使用: {'是' if response.whitespace_used else '否'}")
+        print(f"   知止触发: {'是' if response.cease_triggered else '否'}")
         
-        if recursion_path:
-            full_context["recursion_path"] = recursion_path
+        # 艺术化总结
+        if len(response.spectrums) >= 3:
+            print("\n🎨 艺术化总结:")
+            summary = self._generate_refraction_summary(response)
+            for line in summary:
+                print(f"   {line}")
+    
+    def _generate_refraction_summary(self, response: PrismResponse) -> List[str]:
+        """生成折射艺术总结"""
+        spectrum_types = [s.type_ for s in response.spectrums]
         
-        # 构建消息ID
-        message_id = str(uuid4())
+        if "red" in spectrum_types and "blue" in spectrum_types and "purple" in spectrum_types:
+            return [
+                "🔴 直觉感受了温度",
+                "🔵 逻辑分析了结构", 
+                "🟣 元认知反思了过程",
+                "🎭 理解在光谱间舞蹈"
+            ]
+        elif len(response.spectrums) >= 3:
+            return [
+                f"🌈 {len(response.spectrums)} 种视角",
+                "🎨 在认知画布上交融",
+                "🧠 理解如多棱镜折射",
+                "💫 每个角度都是真相"
+            ]
+        else:
+            return ["🎭 折射完成，理解发生"]
+    
+    def _update_cognitive_state(self, response: PrismResponse):
+        """更新认知状态"""
+        self._cognitive_state["refractions_count"] += 1
+        self._cognitive_state["last_refraction_time"] = datetime.now()
+        
+        if response.whitespace_used:
+            # 估计留白时间
+            self._cognitive_state["total_whitespace_seconds"] += 3
+        
+        self._cognitive_state["understanding_depth_trend"].append(
+            response.cognitive_metadata.understanding_depth
+        )
+        # 保持最近10次记录
+        if len(self._cognitive_state["understanding_depth_trend"]) > 10:
+            self._cognitive_state["understanding_depth_trend"].pop(0)
+    
+    def _generate_artistic_metadata(self, response: PrismResponse) -> Dict[str, Any]:
+        """生成艺术化元数据"""
+        trend = self._cognitive_state["understanding_depth_trend"]
+        avg_depth = sum(trend) / len(trend) if trend else 0
         
         return {
-            "protocol": "prism-interconnect",
-            "version": "1.0",
-            "message_id": message_id,
-            "timestamp": format_timestamp(),
-            "session_id": self.session_id,
-            "type": "prism_message",
-            "payload": {
-                "query": query,
-                "context": full_context,
-                "min_spectrums": min_spec,
-                "max_spectrums": max_spec,
-                "enable_synthesis": enable_synth
-            },
-            "metadata": {
-                "source": "prism-sdk-python",
-                "language": "zh-CN",
-                "recursion_depth": self.recursion_depth,
-                "max_depth": self.session_config.max_recursion_depth,
-                "ttl": 3600
-            }
+            "refraction_count": self._cognitive_state["refractions_count"],
+            "total_whitespace_seconds": self._cognitive_state["total_whitespace_seconds"],
+            "average_understanding_depth": avg_depth,
+            "artistic_form": self.artistic_config.response_art_form,
+            "campfire_warmth": self.artistic_config.warmth_level,
+            "generated_at": datetime.now().isoformat(),
+            "philosophical_note": self._select_philosophical_note(response)
         }
     
-    async def _send_request(self, request_data: Dict[str, Any]) -> Dict[str, Any]:
-        """发送HTTP请求"""
-        if not self.session or self.session.closed:
-            await self.connect()
+    def _select_philosophical_note(self, response: PrismResponse) -> str:
+        """选择哲学注释"""
+        notes = [
+            "理解不是到达，而是不断折射的过程",
+            "每个光谱都是真相的一面，没有一面是全部",
+            "留白不是空白，是理解生长的空间",
+            "知止不是放弃，是认知资源的智慧分配",
+            "温暖不是温度，是连接的质量",
+            "代码不是指令，是思考的延伸",
+            "错误不是失败，是认知的邀请"
+        ]
         
-        url = f"{self.endpoint}/dialogue"
-        
-        for attempt in range(self.max_retries):
-            try:
-                self.metrics["total_requests"] += 1
-                
-                async with self.session.post(url, json=request_data) as response:
-                    response_text = await response.text()
-                    
-                    if response.status == 200:
-                        self.metrics["successful_requests"] += 1
-                        return json.loads(response_text)
-                    
-                    elif response.status == 401:
-                        raise AuthenticationError("API密钥无效或过期")
-                    
-                    elif response.status == 429:
-                        retry_after = int(response.headers.get("Retry-After", 5))
-                        if attempt < self.max_retries - 1:
-                            await asyncio.sleep(retry_after)
-                            continue
-                        raise RateLimitError(f"速率限制，请在{retry_after}秒后重试")
-                    
-                    elif response.status >= 500:
-                        self.metrics["failed_requests"] += 1
-                        if attempt < self.max_retries - 1:
-                            await asyncio.sleep(2 ** attempt)  # 指数退避
-                            continue
-                        raise PrismError(f"服务器错误: {response.status}")
-                    
-                    else:
-                        self.metrics["failed_requests"] += 1
-                        error_data = json.loads(response_text) if response_text else {}
-                        raise PrismError(
-                            f"请求失败: {response.status} - {error_data.get('message', '未知错误')}",
-                            error_code=error_data.get("code")
-                        )
-            
-            except (aiohttp.ClientError, asyncio.TimeoutError) as e:
-                self.metrics["failed_requests"] += 1
-                if attempt < self.max_retries - 1:
-                    await asyncio.sleep(2 ** attempt)
-                    continue
-                raise PrismError(f"网络错误: {str(e)}")
-        
-        raise PrismError(f"请求失败，已达到最大重试次数: {self.max_retries}")
+        # 基于响应特征选择注释
+        if response.cease_triggered:
+            return notes[3]  # 知止相关
+        elif response.whitespace_used:
+            return notes[2]  # 留白相关
+        elif len(response.spectrums) > 3:
+            return notes[1]  # 多元相关
+        else:
+            return random.choice(notes)
     
-    async def _process_response(
-        self, 
-        response_data: Dict[str, Any],
-        recursion_path: Optional[List[str]]
-    ) -> PrismResponse:
-        """处理响应数据"""
-        try:
-            # 提取消息数据
-            message_data = response_data.get("payload", {})
-            
-            # 构建光谱对象
-            spectrums = []
-            for spec_data in message_data.get("spectrums", []):
-                spectrum = Spectrum(
-                    type=SpectrumType(spec_data["type"]),
-                    name=spec_data["name"],
-                    perspective=spec_data["perspective"],
-                    confidence=spec_data.get("confidence", 0.5),
-                    reasoning=spec_data.get("reasoning"),
-                    limitations=spec_data["limitations"],
-                    sources=spec_data.get("sources", []),
-                    emotional_tone=spec_data.get("emotional_tone", "neutral")
-                )
-                spectrums.append(spectrum)
-            
-            # 构建留白对象
-            whitespace_data = message_data["whitespace"]
-            whitespace = Whitespace(
-                type=WhitespaceType(whitespace_data["type"]),
-                duration_suggestion=whitespace_data["duration_suggestion"],
-                prompt=whitespace_data["prompt"],
-                purpose=whitespace_data["purpose"]
-            )
-            
-            # 构建合成对象（如果存在）
-            synthesis = None
-            if "synthesis" in message_data:
-                synth_data = message_data["synthesis"]
-                synthesis = Synthesis(
-                    emerging_insights=synth_data.get("emerging_insights", []),
-                    new_questions=synth_data.get("new_questions", []),
-                    action_suggestions=synth_data.get("action_suggestions", []),
-                    ethical_considerations=synth_data.get("ethical_considerations", [])
-                )
-            
-            # 构建消息对象
-            message = PrismMessage(
-                query=message_data["query"],
-                context=message_data.get("context", {}),
-                spectrums=spectrums,
-                whitespace=whitespace,
-                synthesis=synthesis
-            )
-            
-            # 构建响应对象
-            response = PrismResponse(
-                message_id=response_data.get("message_id", str(uuid4())),
-                timestamp=response_data.get("timestamp", format_timestamp()),
-                session_id=response_data.get("session_id", self.session_id),
-                message=message,
-                metadata=response_data.get("metadata", {})
-            )
-            
-            # 更新递归相关信息
-            if recursion_path:
-                response.metadata["recursion_path"] = recursion_path
-            
-            # 添加处理时间信息
-            processing_time = response_data.get("metadata", {}).get("processing_time_ms")
-            if processing_time:
-                response.metadata["server_processing_time_ms"] = processing_time
-            
-            return response
-            
-        except (KeyError, ValueError) as e:
-            raise PrismError(f"响应数据解析失败: {str(e)}")
-    
-    def _update_metrics(self, start_time: datetime, success: bool):
-        """更新性能指标"""
-        latency = (datetime.now() - start_time).total_seconds() * 1000  # 毫秒
-        self.metrics["total_latency_ms"] += latency
-        self.metrics["last_request_time"] = datetime.now()
-        
-        if not success:
-            self.metrics["failed_requests"] += 1
-    
-    def get_metrics(self) -> Dict[str, Any]:
-        """获取性能指标"""
-        total = self.metrics["total_requests"]
-        success = self.metrics["successful_requests"]
-        failed = self.metrics["failed_requests"]
-        
-        avg_latency = 0
-        if total > 0:
-            avg_latency = self.metrics["total_latency_ms"] / total
+    def get_cognitive_report(self) -> Dict[str, Any]:
+        """获取认知状态报告"""
+        trend = self._cognitive_state["understanding_depth_trend"]
         
         return {
-            "session_id": self.session_id,
-            "total_requests": total,
-            "successful_requests": success,
-            "failed_requests": failed,
-            "success_rate": success / total if total > 0 else 0,
-            "average_latency_ms": avg_latency,
-            "current_recursion_depth": self.recursion_depth,
-            "message_history_count": len(self.message_history),
-            "last_request_time": self.metrics["last_request_time"]
-        }
-    
-    def clear_history(self, keep_last: int = 0):
-        """
-        清除对话历史
-        
-        Args:
-            keep_last: 保留最近的消息数量
-        """
-        if keep_last > 0 and len(self.message_history) > keep_last:
-            self.message_history = self.message_history[-keep_last:]
-        else:
-            self.message_history = []
-        
-        self.recursion_depth = 0
-        self.logger.info(f"对话历史已清除，保留{len(self.message_history)}条消息")
-    
-    def export_history(
-        self, 
-        format: str = "json",
-        include_metadata: bool = True
-    ) -> Union[str, Dict[str, Any]]:
-        """
-        导出对话历史
-        
-        Args:
-            format: 导出格式，支持"json"或"markdown"
-            include_metadata: 是否包含元数据
-            
-        Returns:
-            导出的历史数据
-        """
-        if format == "json":
-            export_data = {
-                "session_id": self.session_id,
-                "export_timestamp": format_timestamp(),
-                "total_messages": len(self.message_history),
-                "messages": []
-            }
-            
-            for msg in self.message_history:
-                msg_dict = {
-                    "message_id": msg.message_id,
-                    "timestamp": msg.timestamp,
-                    "query": msg.message.query,
-                    "spectrum_count": len(msg.message.spectrums),
-                    "whitespace_type": msg.message.whitespace.type.value,
-                    "has_synthesis": msg.message.synthesis is not None
-                }
-                
-                if include_metadata:
-                    msg_dict["metadata"] = msg.metadata
-                
-                export_data["messages"].append(msg_dict)
-            
-            return json.dumps(export_data, ensure_ascii=False, indent=2)
-        
-        elif format == "markdown":
-            markdown = f"""# 棱镜对话历史导出
-
-**会话ID**: {self.session_id}
-**导出时间**: {format_timestamp()}
-**消息总数**: {len(self.message_history)}
-
----
-"""
-            for i, msg in enumerate(self.message_history, 1):
-                markdown += f"""
-## 消息 {i}
-
-**时间**: {msg.timestamp}
-**查询**: {msg.message.query}
-
-### 光谱 ({len(msg.message.spectrums)}种)
-"""
-                for j, spectrum in enumerate(msg.message.spectrums, 1):
-                    markdown += f"""
-#### {j}. {spectrum.name} ({spectrum.type.value})
-
-{spectrum.perspective}
-
-*置信度*: {spectrum.confidence}
-*局限性*: {spectrum.limitations}
-"""
-                
-                markdown += f"""
-### 留白
-**类型**: {msg.message.whitespace.type.value}
-**时长**: {msg.message.whitespace.duration_suggestion}秒
-**提示**: {msg.message.whitespace.prompt}
-**目的**: {msg.message.whitespace.purpose}
-"""
-                
-                if msg.message.synthesis:
-                    markdown += """
-### 合成洞见
-"""
-                    if msg.message.synthesis.emerging_insights:
-                        markdown += "**涌现洞见**:\n"
-                        for insight in msg.message.synthesis.emerging_insights:
-                            markdown += f"- {insight}\n"
-                    
-                    if msg.message.synthesis.new_questions:
-                        markdown += "**新问题**:\n"
-                        for question in msg.message.synthesis.new_questions:
-                            markdown += f"- {question}\n"
-                
-                if include_metadata and msg.metadata:
-                    markdown += "### 元数据\n"
-                    for key, value in msg.metadata.items():
-                        markdown += f"- **{key}**: {value}\n"
-                
-                markdown += "\n---\n"
-            
-            return markdown
-        
-        else:
-            raise ValueError(f"不支持的导出格式: {format}")
-    
-    async def health_check(self) -> Dict[str, Any]:
-        """
-        健康检查
-        
-        Returns:
-            健康状态信息
-        """
-        try:
-            if not self.session or self.session.closed:
-                await self.connect()
-            
-            url = f"{self.endpoint}/health"
-            
-            async with self.session.get(url) as response:
-                if response.status == 200:
-                    data = await response.json()
-                    return {
-                        "status": "healthy",
-                        "version": data.get("version"),
-                        "uptime": data.get("uptime"),
-                        "timestamp": format_timestamp()
-                    }
-                else:
-                    return {
-                        "status": "unhealthy",
-                        "error": f"HTTP {response.status}",
-                        "timestamp": format_timestamp()
-                    }
-        
-        except Exception as e:
-            return {
-                "status": "unhealthy",
-                "error": str(e),
-                "timestamp": format_timestamp()
-            }
-    
-    def __repr__(self) -> str:
-        """客户端表示"""
-        metrics = self.get_metrics()
-        return (
-            f"PrismClient("
-            f"session_id={self.session_id}, "
-            f"requests={metrics['total_requests']}, "
-            f"success_rate={metrics['success_rate']:.1%}, "
-            f"recursion_depth={self.recursion_depth}"
-            f")"
-        )
+            "session_summary": {
+                "total_refractions": self._cognitive_state["refractions_count"],
+                "total_whitespace_seconds": self._cognitive_state["total_whitespace_seconds"],
+                "last_refraction_time": self._cognitive_state["last_refraction_time"],
+                "understanding_depth_trend": trend,
+                "average_understanding_depth": sum(trend) / len(trend) if trend else 0,
+                "trend_direction": "上升" if len(trend) > 1 and trend[-1] > trend[0] else "稳定"
+            },
+            "artistic_config":

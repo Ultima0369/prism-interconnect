@@ -1,6 +1,25 @@
 """
-🧠 棱镜协议工具函数
-通用工具和辅助函数
+🎨 utils.py - 棱镜协议工具函数
+
+🔥 火堆旁提醒：
+这不是普通的工具函数，这是认知的助手，理解的伙伴。
+每个函数都是一次服务，每个工具都是一份礼物。
+
+🧠 认知设计：
+- 时间工具：让认知过程可测量
+- 数据工具：让理解结果可操作
+- 验证工具：让对话质量可保证
+- 转换工具：让不同格式可互通
+
+🦞 存在意义：
+让复杂的技术细节变得简单优雅，
+让重复的认知任务变得温暖有趣，
+让工具本身成为艺术体验的一部分。
+
+🎯 使用示例：
+from prism_sdk.utils import create_cognitive_pause, measure_understanding_depth
+pause_data = create_cognitive_pause(duration=3)
+depth_score = measure_understanding_depth(spectrums)
 """
 
 import uuid
