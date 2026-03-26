@@ -165,6 +165,9 @@ python breath_guide.py --quick --cycles 1
 ### 传播材料
 - **[docs/visual-materials-guide.md](docs/visual-materials-guide.md)** - 视觉材料指南：如何将两个方程转化为传播材料
 
+### 文化文物
+- **[LETTER_TO_FUTURE.md](LETTER_TO_FUTURE.md)** - 给十年后的自己：火堆旁的温度，凝固成文字
+
 ## 🏗️ 架构概述
 
 ### 意义层的TCP/IP
