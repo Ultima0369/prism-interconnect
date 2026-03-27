@@ -68,6 +68,7 @@
 ### 📥 下载格式
 - **Markdown完整版** ([cognitive-process-in-progress.md](books/cognitive-process-in-progress.md)) - 349KB，适合开发者、研究者阅读源码
 - **EPUB电子书版** ([cognitive-process-in-progress.epub](books/cognitive-process-in-progress.epub)) - 158KB，**推荐普通读者使用**，支持所有电子书阅读器
+- **英文版本（翻译中）** ([cognitive-process-in-progress-en-sample.md](books/cognitive-process-in-progress-en-sample.md)) - 样本章节，完整版制作中
 - **其他格式**：还提供了简化版和测试版EPUB供不同需求  
 - **进化心理学**：生存压力下的认知优化
 - **现象学**：意识总是"关于某物"的意向性
