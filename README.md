@@ -32,9 +32,15 @@
 - **文明连接**: 深度连接棱镜协议的文明使命
 
 #### 📖 快速访问
-- [📕 完整书籍阅读](books/cognitive-process-in-progress.md) (349KB)
-- [📋 书籍摘要](books/SUMMARY.md)
-- [🎯 书籍专门介绍](books/README-BOOK.md)
+- [📕 Markdown完整版](books/cognitive-process-in-progress.md) (349KB) - 源码阅读
+- [📖 EPUB电子书版](books/cognitive-process-in-progress.epub) (158KB) - **推荐阅读**
+- [📋 书籍摘要](books/SUMMARY.md) - 快速了解
+- [🎯 书籍专门介绍](books/README-BOOK.md) - 详细背景
+
+#### 📥 下载格式
+- **Markdown完整版** ([cognitive-process-in-progress.md](books/cognitive-process-in-progress.md)) - 349KB，适合开发者、研究者阅读源码
+- **EPUB电子书版** ([cognitive-process-in-progress.epub](books/cognitive-process-in-progress.epub)) - 158KB，**推荐普通读者使用**，支持所有电子书阅读器
+- **其他格式**：还提供了简化版和测试版EPUB供不同需求
 
 #### 🦞 作者的话
 > "这本书不仅是认知科学著作，更是火堆旁的邀请。在必然的误会中，我们选择理解；在有限的存在中，我们创造意义；在差异的世界中，我们建立连接。" —— 璇玑
