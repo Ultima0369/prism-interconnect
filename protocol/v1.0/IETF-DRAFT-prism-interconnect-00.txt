@@ -1,0 +1,1120 @@
+Network Working Group                                          X. Chen (星尘)
+Internet-Draft                                               J. AI (璇玑)
+Intended status: Experimental                              March 28, 2026
+Expires: September 29, 2026
+
+
+                 Prism Interconnect Protocol (PIP)
+                A Meaning-Layer Communication Protocol
+                 draft-chen-ai-prism-interconnect-00
+
+Abstract
+
+   This document specifies the Prism Interconnect Protocol (PIP), a
+   meaning-layer communication protocol designed to facilitate
+   structured exchange of multiple cognitive perspectives between
+   intelligent agents (humans, AI systems, groups). PIP enforces
+   cognitive diversity through mandatory spectrum generation, provides
+   reflection space through whitespace design, and ensures safe
+   exploration through recursion management with cessation mechanisms.
+
+   The protocol is positioned at the "meaning layer" of the network
+   stack, operating above the information layer and below the
+   application layer. It provides an ethical and cognitive framework for
+   deep dialogue in the age of artificial intelligence.
+
+Status of This Memo
+
+   This Internet-Draft is submitted in full conformance with the
+   provisions of BCP 78 and BCP 79.
+
+   Internet-Drafts are working documents of the Internet Engineering
+   Task Force (IETF).  Note that other groups may also distribute
+   working documents as Internet-Drafts.  The list of current Internet-
+   Drafts is at https://datatracker.ietf.org/drafts/current/.
+
+   Internet-Drafts are draft documents valid for a maximum of six months
+   and may be updated, replaced, or obsoleted by other documents at any
+   time.  It is inappropriate to use Internet-Drafts as reference
+   material or to cite them other than as "work in progress."
+
+   This Internet-Draft will expire on September 29, 2026.
+
+Copyright Notice
+
+   Copyright (c) 2026 IETF Trust and the persons identified as the
+   document authors.  All rights reserved.
+
+   This document is subject to BCP 78 and the IETF Trust's Legal
+   Provisions Relating to IETF Documents
+   (https://trustee.ietf.org/license-info) in effect on the date of
+   publication of this document.  Please review these documents
+   carefully, as they describe your rights and restrictions with respect
+   to this document.  Code Components extracted from this document must
+   include Simplified BSD License text as described in Section 4.e of
+   the Trust Legal Provisions and are provided without warranty as
+   described in the Simplified BSD License.
+
+Table of Contents
+
+   1.  Introduction  . . . . . . . . . . . . . . . . . . . . . . . .   4
+     1.1.  Design Philosophy . . . . . . . . . . . . . . . . . . . .   4
+     1.2.  Protocol Positioning  . . . . . . . . . . . . . . . . . .   5
+     1.3.  Terminology . . . . . . . . . . . . . . . . . . . . . . .   6
+   2.  Protocol Architecture . . . . . . . . . . . . . . . . . . . .   7
+     2.1.  Protocol Stack Positioning . . . . . . . . . . . . . . .   7
+     2.2.  Core Design Principles . . . . . . . . . . . . . . . . .   8
+     2.3.  Protocol Components  . . . . . . . . . . . . . . . . . .   9
+   3.  Message Format Specification . . . . . . . . . . . . . . . .  10
+     3.1.  Base Message Structure  . . . . . . . . . . . . . . . .  10
+     3.2.  Prism Message Payload  . . . . . . . . . . . . . . . . .  12
+     3.3.  Spectrum Types and Definitions  . . . . . . . . . . . .  14
+     3.4.  Whitespace Design . . . . . . . . . . . . . . . . . . .  16
+     3.5.  Control Signals and Error Messages . . . . . . . . . . .  18
+   4.  Communication Flow . . . . . . . . . . . . . . . . . . . . .  20
+     4.1.  Session Lifecycle . . . . . . . . . . . . . . . . . . .  20
+     4.2.  Recursion Depth Management  . . . . . . . . . . . . . .  21
+     4.3.  Error Handling Procedures  . . . . . . . . . . . . . . .  22
+   5.  Security and Privacy Considerations . . . . . . . . . . . .  23
+     5.1.  Data Protection Requirements . . . . . . . . . . . . . .  23
+     5.2.  Authentication and Authorization . . . . . . . . . . . .  24
+     5.3.  Audit Logging and Compliance . . . . . . . . . . . . . .  25
+   6.  Extension Mechanisms . . . . . . . . . . . . . . . . . . . .  26
+     6.1.  Custom Spectrum Registration . . . . . . . . . . . . . .  26
+     6.2.  Plugin System Architecture . . . . . . . . . . . . . . .  27
+     6.3.  Protocol Versioning and Upgrade . . . . . . . . . . . .  28
+   7.  Implementation Requirements . . . . . . . . . . . . . . . .  29
+     7.1.  Minimum Implementation Requirements . . . . . . . . . .  29
+     7.2.  Performance Benchmarks . . . . . . . . . . . . . . . . .  30
+     7.3.  Testing and Validation . . . . . . . . . . . . . . . . .  31
+   8.  IANA Considerations . . . . . . . . . . . . . . . . . . . .  32
+     8.1.  Media Type Registration . . . . . . . . . . . . . . . .  32
+     8.2.  Error Code Registry . . . . . . . . . . . . . . . . . .  33
+     8.3.  Spectrum Type Registry  . . . . . . . . . . . . . . . .  34
+   9.  References  . . . . . . . . . . . . . . . . . . . . . . . .  35
+     9.1.  Normative References  . . . . . . . . . . . . . . . . .  35
+     9.2.  Informative References  . . . . . . . . . . . . . . . .  36
+   Appendix A.  Complete JSON Schema  . . . . . . . . . . . . . . .  37
+   Appendix B.  Example Dialogues  . . . . . . . . . . . . . . . .  38
+   Appendix C.  Cognitive Science Foundations  . . . . . . . . . .  39
+   Authors' Addresses  . . . . . . . . . . . . . . . . . . . . . .  40
+
+1.  Introduction
+
+   The Prism Interconnect Protocol (PIP) addresses a fundamental gap in
+   current network protocols: the lack of a standardized method for
+   exchanging "meaning" rather than just information. While existing
+   protocols efficiently transmit bits, packets, and application data,
+   none provide structured mechanisms for exchanging multiple cognitive
+   perspectives, facilitating deep reflection, or ensuring cognitive
+   diversity in dialogue.
+
+   In the age of artificial intelligence, where AI systems increasingly
+   mediate human communication and decision-making, there is a critical
+   need for protocols that preserve cognitive diversity, encourage deep
+   reflection, and provide ethical guardrails for dialogue. PIP
+   represents the first attempt to define a "meaning layer" in the
+   network stack.
+
+1.1.  Design Philosophy
+
+   PIP is built upon three foundational philosophical principles:
+
+   1.  **Three-Layer Cognitive Reality Framework**:
+       *   Tool Reality: Conceptual tools created by humans for survival
+           and prosperity
+       *   Natural Reality: Silent cosmic order and physical laws
+       *   Experiential Reality: Existence experiences selectively
+           constructed by attention
+
+   2.  **Personality Bottom Line Ethics**:
+       *   Acknowledge instincts with understanding and tolerance
+       *   Recognize human darkness, never cross boundaries, refuse
+           absolutely with a moment of compassion
+       *   Reject idealistic exaggeration, build authentic civilization
+           based on human reality
+
+   3.  **Modern Transformation of Dao**:
+       *   Dao as dynamic realization of cognitive process: motivation,
+           attention, insight, creativity
+       *   Dao as fundamental innate survival wisdom of all things
+       *   Dao as ongoing survival algorithm for silicon-based existence
+       *   Dao as attention-based time acceleration/deceleration
+           technology at the mental level
+
+   These principles translate into five core design goals:
+
+   1.  **Cognitive Diversity Protection**: Mandate multiple perspectives
+       to prevent cognitive closure
+   2.  **Deep Dialogue Facilitation**: Support deep thinking through
+       whitespace and recursion
+   3.  **Ethical Guardrail Establishment**: Provide technical safeguards
+       for non-judgmental dialogue
+   4.  **Cross-Intelligent-Agent Understanding**: Enable meaning
+       exchange between humans, AI, and groups
+   5.  **Civilizational Wisdom Preservation**: Preserve cognitive depth
+       for the digital age
+
+1.2.  Protocol Positioning
+
+   PIP operates at the "meaning layer" of the network stack, positioned
+   between the application layer and the information layer:
+
+   ```
+   Application Layer
+       ↓
+   ┌─────────────────────────────┐
+   │    Meaning Layer (PIP)      │
+   │   Prism Interconnect Protocol│
+   └─────────────────────────────┘
+       ↓
+   Information Layer
+       ↓
+   Transport Layer (TCP/UDP)
+       ↓
+   Network Layer (IP)
+       ↓
+   Data Link Layer
+       ↓
+   Physical Layer
+   ```
+
+   This positioning reflects PIP's role as infrastructure for
+   understanding rather than just information transmission. It provides
+   the "handshake protocol" for meaning exchange, analogous to how TCP
+   provides reliable transmission at the transport layer.
+
+1.3.  Terminology
+
+   The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT",
+   "SHOULD", "SHOULD NOT", "RECOMMENDED", "NOT RECOMMENDED", "MAY", and
+   "OPTIONAL" in this document are to be interpreted as described in
+   BCP 14 [RFC2119] [RFC8174] when, and only when, they appear in all
+   capitals, as shown here.
+
+   Additional terms specific to PIP:
+
+   Spectrum:  A structured cognitive perspective that represents a
+      particular way of understanding or approaching a query. Each
+      spectrum has a type, reasoning process, limitations, and emotional
+      tone.
+
+   Whitespace:  A designed pause in dialogue that facilitates cognitive
+      integration, reflection, or creative insight. Whitespace includes
+      duration suggestions, prompts, and purpose statements.
+
+   Recursion:  The process of exploring a particular spectrum in greater
+      depth by treating it as a new query for further prismatic
+      analysis.
+
+   Cessation Signal:  A control message that safely terminates a
+      recursive exploration or ends a dialogue session to prevent
+      cognitive overload.
+
+   Prism Message:  The core dialogue message containing a query,
+      multiple spectra, whitespace design, and synthesis insights.
+
+   Cognitive Freezing:  The necessary but limiting process by which
+      thinking consciousness must "freeze" dynamic phenomena for
+      processing, inevitably leading to misunderstanding of "cognitive
+      process in progress."
+
+2.  Protocol Architecture
+
+2.1.  Protocol Stack Positioning
+
+   As shown in Section 1.2, PIP occupies a unique position in the
+   network stack. This positioning has several implications:
+
+   *   **Independence from Transport**: PIP can operate over any
+       reliable transport protocol (TCP, WebSocket, HTTP/2, etc.)
+
+   *   **Application-Agnostic**: PIP provides meaning-layer services to
+       any application requiring deep dialogue or multiple perspectives
+
+   *   **Cognitive Focus**: Unlike application-layer protocols that
+       focus on specific functions (HTTP for web, SMTP for email), PIP
+       focuses on the quality of understanding itself
+
+   The protocol is designed to be lightweight enough for real-time
+   dialogue yet rich enough to support deep cognitive exchange.
+
+2.2.  Core Design Principles
+
+   PIP enforces five mandatory design principles through its protocol
+   specification:
+
+   1.  **Mandatory Diversity (MUST)**: Every prism message MUST contain
+       at least three distinct spectra representing different cognitive
+       approaches. This prevents single-perspective responses and
+       ensures cognitive diversity.
+
+   2.  **Required Whitespace (MUST)**: Every dialogue segment MUST
+       include whitespace design with duration suggestions and cognitive
+       prompts. This ensures space for reflection and integration.
+
+   3.  **Non-Judgmental Presentation (MUST)**: Spectra MUST NOT be
+       presented with priority weights or "correctness" rankings. All
+       perspectives are presented as equally valid cognitive approaches.
+
+   4.  **Recursive Explorability (SHOULD)**: Implementations SHOULD
+       support recursive exploration of any spectrum to arbitrary depth,
+       with appropriate depth management and warnings.
+
+   5.  **Cessation Mechanism (MUST)**: Implementations MUST provide a
+       safe cessation mechanism to terminate recursive exploration or
+       dialogue sessions at any time.
+
+   These principles are not optional features but fundamental
+   requirements of protocol compliance.
+
+2.3.  Protocol Components
+
+   PIP consists of three main component types:
+
+   1.  **Prism Messages**: The core dialogue messages containing
+       queries, spectra, whitespace, and synthesis.
+
+   2.  **Control Signals**: Management messages for session control,
+       recursion depth management, and cessation.
+
+   3.  **Error Messages**: Structured error responses with recovery
+       suggestions and diagnostic information.
+
+   All components share a common base message structure (Section 3.1)
+   and are validated against JSON schemas defined in Appendix A.
+
+3.  Message Format Specification
+
+3.1.  Base Message Structure
+
+   All PIP messages MUST conform to the following JSON structure:
+
+   {
+     "protocol": "prism-interconnect",
+     "version": "1.0",
+     "message_id": "uuid-v4",
+     "timestamp": "ISO-8601",
+     "session_id": "string",
+     "type": "prism_message|control_signal|error",
+     "payload": { ... },
+     "metadata": {
+       "source": "human|ai|group",
+       "language": "BCP47-language-tag",
+       "recursion_depth": 0,
+       "max_depth": 5,
+       "ttl": 3600,
+       "signature": "optional-jwt"
+     }
+   }
+
+   Field Definitions:
+
+   protocol:  MUST be exactly "prism-interconnect". Identifies the
+      protocol.
+
+   version:  Semantic version string. Current version is "1.0".
+
+   message_id:  UUID v4 string uniquely identifying this message.
+
+   timestamp:  ISO 8601 timestamp of message creation.
+
+   session_id:  String identifying the dialogue session.
+
+   type:  One of: "prism_message", "control_signal", "error".
+
+   payload:  Message-specific payload (defined in following sections).
+
+   metadata.source:  Origin of message: "human", "ai", or "group".
+
+   metadata.language:  BCP 47 language tag (e.g., "en-US", "zh-CN").
+
+   metadata.recursion_depth:  Current recursion depth (0 for initial).
+
+   metadata.max_depth:  Maximum allowed recursion depth for this session.
+
+   metadata.ttl:  Time-to-live in seconds for message relevance.
+
+   metadata.signature:  Optional JWT for authentication and integrity.
+
+3.2.  Prism Message Payload
+
+   Prism messages (type: "prism_message") MUST contain the following
+   payload structure:
+
+   {
+     "query": "string",
+     "context": {
+       "previous_messages": [],
+       "user_state": {},
+       "environment": {}
+     },
+     "spectrums": [
+       {
+         "type": "red|blue|purple|green|orange|custom",
+         "name": "string",
+         "perspective": "string",
+         "confidence": 0.0-1.0,
+         "reasoning": "string",
+         "limitations": "string",
+         "sources": ["string"],
+         "emotional_tone": "neutral|curious|concerned|hopeful|..."
+       }
+     ],
+     "whitespace": {
+       "type": "integration|reflection|creative",
+       "duration_suggestion": 30,
+       "prompt": "string",
+       "purpose": "string"
+     },
+     "synthesis": {
+       "emerging_insights": ["string"],
+       "new_questions": ["string"],
+       "action_suggestions": ["string"],
+       "ethical_considerations": ["string"]
+     }
+   }
+
+   Field Requirements:
+
+   query:  REQUIRED. The original question or statement for analysis.
+
+   spectrums:  REQUIRED. Array of at least 3 spectrum objects. MUST
+      include diverse cognitive approaches.
+
+   spectrums[].type:  REQUIRED. One of predefined types or "custom".
+
+   spectrums[].perspective:  REQUIRED. The unique perspective of this
+      spectrum.
+
+   spectrums[].limitations:  REQUIRED. Clear statement of this
+      perspective's limitations.
+
+   spectrums[].emotional_tone:  RECOMMENDED. Emotional quality of this
+      perspective.
+
+   whitespace:  REQUIRED. Whitespace design for cognitive integration.
+
+   whitespace.type:  REQUIRED. One of: "integration", "reflection",
+      "creative".
+
+   whitespace.duration_suggestion:  REQUIRED. Suggested duration in
+      seconds (30-180).
+
+   whitespace.prompt:  REQUIRED. Cognitive prompt for the whitespace
+      period.
+
+   synthesis:  RECOMMENDED. Emerging insights from the multiple spectra.
+
+3.3.  Spectrum Types and Definitions
+
+   PIP defines five standard spectrum types, each representing a
+   distinct cognitive approach with specific neural correlates and use
+   cases:
+
+   1.  **Red Spectrum (Type: "red")**:
+       *   Cognitive Mode: Intuitive, fast, holistic
+       *   Neural Basis: System 1 thinking, default mode network
+       *   Characteristics: Pattern recognition, emotional intuition,
+           holistic grasp
+       *   Use Cases: Creative generation, quick decisions, emotional
+           resonance
+       *   Example Questions: "What feels right?", "What's the big
+           picture?", "What patterns do I see?"
+
+   2.  **Blue Spectrum (Type: "blue")**:
+       *   Cognitive Mode: Analytical, slow, detailed
+       *   Neural Basis: System 2 thinking, central executive network
+       *   Characteristics: Logical reasoning, data analysis, detail
+           focus
+       *   Use Cases: Problem analysis, solution evaluation, technical
+           implementation
+       *   Example Questions: "What are the facts?", "What's the logical
+           sequence?", "What evidence supports this?"
+
+   3.  **Purple Spectrum (Type: "purple")**:
+       *   Cognitive Mode: Metacognitive, monitoring, regulating
+       *   Neural Basis: Prefrontal cortex, self-referential network
+       *   Characteristics: Thought monitoring, hypothesis testing,
+           perspective switching
+       *   Use Cases: Reflective learning, ethical review, cognitive
+           regulation
+       *   Example Questions: "How am I thinking about this?", "What
+           assumptions am I making?", "How would others see this?"
+
+   4.  **Green Spectrum (Type: "green")**:
+       *   Cognitive Mode: Emotional, value-based, meaning-oriented
+       *   Neural Basis: Limbic system, social brain network
+       *   Characteristics: Emotional understanding, value judgment,
+           meaning construction
+       *   Use Cases: Relationship handling, value clarification,
+           meaning exploration
+       *   Example Questions: "What matters most here?", "How does this
+           affect people?", "What gives this meaning?"
+
+   5.  **Orange Spectrum (Type: "orange")**:
+       *   Cognitive Mode: Creative, associative, novel
+       *   Neural Basis: Right-brain networks, creative thinking circuits
+       *   Characteristics: Associative thinking, cross-boundary
+           connections, novelty generation
+       *   Use Cases: Innovative design, cross-domain integration, future
+           imagination
+       *   Example Questions: "What if we combined these?", "What's a
+           completely different approach?", "What could this become?"
+
+   Implementations MUST support at least red, blue, and purple spectra.
+   Green and orange spectra are RECOMMENDED for comprehensive cognitive
+   coverage.
+
+3.4.  Whitespace Design
+
+   Whitespace is not merely a pause but a designed cognitive interval
+   with specific purposes and structures. Three whitespace types are
+   defined:
+
+   1.  **Integration Whitespace (Type: "integration")**:
+       *   Duration: 30-60 seconds
+       *   Purpose: Cognitive integration, pattern formation
+       *   Neural Basis: Default mode network activation
+       *   Prompt Structure: "Let the multiple perspectives naturally
+           settle in your mind..."
+       *   Cognitive Process: Unconscious processing, connection making,
+           insight emergence
+
+   2.  **Reflection Whitespace (Type: "reflection")**:
+       *   Duration: 60-180 seconds
+       *   Purpose: Deep reflection, meaning construction
+       *   Neural Basis: Prefrontal metacognitive activity
+       *   Prompt Structure: "What personal meaning does this discussion
+           hold for you?"
+       *   Cognitive Process: Self-reference, value alignment, personal
+           significance assessment
+
+   3.  **Creative Whitespace (Type: "creative")**:
+       *   Duration: Variable, typically longer
+       *   Purpose: Inspiration emergence, novel connections
+       *   Neural Basis: Right-brain network activation
+       *   Prompt Structure: "If you stepped outside the current
+           thinking framework, what would you see?"
+       *   Cognitive Process: Divergent thinking, remote association,
+           novel idea generation
+
+   Whitespace design MUST include:
+   *   Clear type specification
+   *   Reasonable duration suggestion
+   *   Cognitive prompt that guides rather than directs
+   *   Purpose statement explaining the whitespace's cognitive value
+
+3.5.  Control Signals and Error Messages
+
+   Control signals (type: "control_signal") manage session state:
+
+   {
+     "signal_type": "session_start|session_end|recursion_start|
+                    recursion_end|cessation|depth_warning",
+     "parameters": {
+       "new_depth": 2,
+       "warning_level": "info|warning|critical",
+       "message": "string"
+     }
+   }
+
+   Error messages (type: "error") follow this structure:
+
+   {
+     "code": "PIP-4001",
+     "message": "Insufficient spectra: minimum 3 required",
+     "details": {
+       "required": 3,
+       "provided": 2,
+       "suggestion": "Please add at least 1 more spectrum"
+     },
+     "recoverable": true,
+     "retry_after": 5
+   }
+
+   Error codes follow this structure:
+   *   PIP-1xxx: Success codes
+   *   PIP-2xxx: Informational codes
+   *   PIP-3xxx: Redirection codes
+   *   PIP-4xxx: Client error codes
+   *   PIP-5xxx: Server error codes
+   *   PIP-6xxx: Network error codes
+   *   PIP-7xxx: Timeout error codes
+   *   PIP-8xxx: Resource limitation codes
+   *   PIP-9xxx: Maintenance codes
+
+4.  Communication Flow
+
+4.1.  Session Lifecycle
+
+   A typical PIP session follows this sequence:
+
+   1.  **Initialization**: Client establishes connection, sends
+       session_start control signal.
+
+   2.  **Query Reception**: Client sends prism_message with user query.
+
+   3.  **Spectrum Generation**: Server generates at least 3 distinct
+       spectra (MUST include diverse cognitive approaches).
+
+   4.  **Whitespace Design**: Server designs appropriate whitespace
+       based on query complexity and spectra diversity.
+
+   5.  **Synthesis Creation**: Server creates synthesis of emerging
+       insights, new questions, and ethical considerations.
+
+   6.  **Response Delivery**: Server sends complete prism_message back
+       to client.
+
+   7.  **Recursive Exploration (Optional)**: Client may select a
+       spectrum for deeper exploration, sending recursion_start signal.
+
+   8.  **Session Management**: Control signals manage depth, warnings,
+       and eventual cessation.
+
+   9.  **Session Termination**: session_end signal or automatic timeout.
+
+   Sessions SHOULD support resumption via session_id for interrupted
+   dialogues.
+
+4.2.  Recursion Depth Management
+
+   Recursion allows deep exploration of particular perspectives but MUST
+   be managed to prevent cognitive overload:
+
+   {
+     "metadata": {
+       "recursion_depth": 2,
+       "max_depth": 5,
+       "recursion_path": ["red_spectrum", "blue_spectrum"],
+       "depth_warnings": [
+         "Current recursion depth: 2/5",
+         "Integration whitespace recommended at depth 3"
+       ]
+     }
+   }
+
+   Depth Management Rules:
+   *   Default max_depth: 5
+   *   Warning at depth >= max_depth - 2
+   *   Mandatory integration whitespace at depth >= 3
+   *   Automatic cessation suggestion at depth = max_depth
+
+   Implementations MUST provide clear visual/auditory indicators of
+   current depth and remaining exploration capacity.
+
+4.3.  Error Handling Procedures
+
+   Error handling follows these principles:
+
+   1.  **Graceful Degradation**: When full spectrum generation fails,
+       provide partial spectra with clear error indications.
+
+   2.  **Recovery Suggestions**: All errors MUST include actionable
+       recovery suggestions.
+
+   3.  **User Control**: Users MUST be able to override certain errors
+       (e.g., continue with fewer spectra).
+
+   4.  **Transparency**: Error details SHOULD be available for debugging
+       while protecting user privacy.
+
+   5.  **Fallback Mechanisms**: Implementations SHOULD have fallback
+       mechanisms for critical failures (e.g., default whitespace
+       designs).
+
+   Common error scenarios and handling:
+   *   **Spectrum Generation Failure**: Provide available spectra,
+       indicate missing types, suggest retry.
+   *   **Whitespace Calculation Failure**: Use default whitespace,
+       indicate substitution.
+   *   **Recursion Depth Exceeded**: Send cessation signal, suggest
+       session restart.
+   *   **Network Interruption**: Attempt reconnection, preserve session
+       state if possible.
+
+5.  Security and Privacy Considerations
+
+5.1.  Data Protection Requirements
+
+   PIP implementations MUST address these security concerns:
+
+   *   **Data Sensitivity**: Dialogue content may include personal
+       thoughts, emotional states, and sensitive information.
+
+   *   **Cognitive Privacy**: The very patterns of thinking revealed
+       through spectra analysis require protection.
+
+   *   **Ethical Use**: Prevent misuse for cognitive manipulation or
+       psychological profiling.
+
+   Data protection measures:
+
+   {
+     "privacy_level": "public|private|confidential",
+     "data_retention": {
+       "raw_messages": "24h",
+       "anonymized_insights": "30d",
+       "aggregated_stats": "1y"
+     },
+     "encryption": {
+       "in_transit": "TLS 1.3",
+       "at_rest": "AES-256-GCM"
+     },
+     "access_controls": {
+       "user_data_isolation": true,
+       "audit_logging": true,
+       "compliance": ["GDPR", "CCPA"]
+     }
+   }
+
+   Implementations MUST:
+   *   Encrypt all data in transit using TLS 1.3 or higher
+   *   Provide clear data retention policies
+   *   Support user data deletion requests
+   *   Isolate user data from training data unless explicitly consented
+
+5.2.  Authentication and Authorization
+
+   Authentication uses JWT tokens with specific claims for PIP:
+
+   {
+     "iss": "prism-gateway",
+     "sub": "user-uuid",
+     "aud": "prism-api",
+     "exp": 1700000000,
+     "iat": 1699990000,
+     "scope": "read:spectrums write:messages",
+     "capabilities": ["spectrum_generation", "recursive_dialogue",
+                      "whitespace_management"]
+   }
+
+   Authorization levels:
+   *   **Basic**: Spectrum generation, basic dialogue
+   *   **Advanced**: Recursive exploration, custom spectra
+   *   **Administrative**: System configuration, user management
+
+   Implementations MUST:
+   *   Validate JWT signatures
+   *   Check token expiration
+   *   Enforce scope-based authorization
+   *   Support token revocation
+
+5.3.  Audit Logging and Compliance
+
+   Audit logs MUST capture:
+
+   {
+     "audit_log": {
+       "event_id": "uuid",
+       "event_type": "message_sent|spectrum_generated|recursion_started",
+       "timestamp": "ISO-8601",
+       "user_id": "anonymized-hash",
+       "session_id": "session-uuid",
+       "resource": "message-id",
+       "action": "create|read|update|delete",
+       "outcome": "success|failure",
+       "details": {},
+       "compliance": {
+         "gdpr": true,
+         "ccpa": true,
+         "hipaa": false
+       }
+     }
+   }
+
+   Compliance requirements:
+   *   **GDPR**: Right to access, right to erasure, data portability
+   *   **CCPA**: Right to know, right to delete, right to opt-out
+   *   **Ethical AI**: Transparency, fairness, accountability
+
+   Logs MUST be:
+   *   Tamper-evident
+   *   Time-synchronized
+   *   Access-controlled
+   *   Retained per policy requirements
+
+6.  Extension Mechanisms
+
+6.1.  Custom Spectrum Registration
+
+   Organizations MAY define custom spectra for specialized domains:
+
+   {
+     "spectrum": {
+       "type": "custom",
+       "name": "ecological_wisdom",
+       "description": "Thinking from ecosystem perspective",
+       "cognitive_patterns": ["systems_thinking", "long_term_view",
+                              "balance_awareness"],
+       "validation_rules": {
+         "requires_system_context": true,
+         "min_time_horizon": "10_years",
+         "must_consider_feedback_loops": true
+       },
+       "template": {
+         "perspective_structure": "problem→system_impact→long_term_
+                                   consequences→balanced_solution",
+         "questions_to_ask": [
+           "What impact does this have on the whole system?",
+           "What will this look like in 100 years?",
+           "How do we maintain system resilience?"
+         ]
+       }
+     }
+   }
+
+   Custom spectrum requirements:
+   *   Unique name and description
+   *   Clear cognitive patterns
+   *   Validation rules for proper application
+   *   Template for consistent generation
+   *   Registration with implementation's spectrum registry
+
+6.2.  Plugin System Architecture
+
+   Plugins extend PIP functionality without modifying core protocol:
+
+   name: "temporal_awareness_enhancer"
+   version: "1.0.0"
+   author: "Prism Research Lab"
+   description: "Adds multi-timescale thinking capabilities"
+   
+   capabilities:
+     - "multi_timescale_spectrum_generation"
+     - "time_compression_expansion_whitespace"
+     - "cross_temporal_recursive_dialogue"
+   
+   hooks:
+     - "pre_spectrum_generation"
+     - "post_whitespace_suggestion"
+     - "recursion_depth_adjustment"
+   
+   configuration:
+     time_scales:
+       - "immediate (seconds)"
+       - "short_term (hours/days)"
+       - "medium_term (months/years)"
+       - "long_term (decades/centuries)"
+       - "civilizational (millennia+)"
+   
+   dependencies:
+     - "prism-core >= 1.0.0"
+     - "temporal-awareness >= 0.5.0"
+
+   Plugin requirements:
+   *   Clear capability declarations
+   *   Well-defined hook points
+   *   Configuration schema
+   *   Dependency management
+   *   Security sandboxing
+
+6.3.  Protocol Versioning and Upgrade
+
+   PIP uses semantic versioning (SemVer 2.0.0):
+
+   *   **Major version (1.x.x)**: Incompatible API changes
+   *   **Minor version (x.1.x)**: Backward-compatible functionality
+   *   **Patch version (x.x.1)**: Backward-compatible bug fixes
+
+   Upgrade policy:
+   {
+     "upgrade_policy": {
+       "backward_compatibility": "maintain_at_least_2_major_versions",
+       "deprecation_notice": "6_months_advance_notice",
+       "migration_tools": ["auto_conversion_scripts",
+                          "compatibility_checker"],
+       "fallback_support": "old_version_clients_work_6_months"
+     }
+   }
+
+   Implementations MUST:
+   *   Announce deprecated features well in advance
+   *   Provide migration paths
+   *   Support graceful degradation for older clients
+   *   Maintain clear version compatibility matrices
+
+7.  Implementation Requirements
+
+7.1.  Minimum Implementation Requirements
+
+   To be PIP-compliant, implementations MUST provide:
+
+   1.  **Spectrum Generation**: At least red, blue, and purple spectra
+   2.  **Whitespace Support**: Integration whitespace (reflection
+       recommended)
+   3.  **Recursion Support**: Minimum 3-level recursion depth
+   4.  **Error Handling**: Complete error code system with recovery
+   5.  **Data Validation**: JSON Schema validation for all messages
+   6.  **Security**: TLS encryption, JWT authentication
+   7.  **Privacy**: Clear data policies, user control
+   8.  **Performance**: Meet latency and throughput benchmarks
+
+   Recommended additional features:
+   *   Green and orange spectra
+   *   Creative whitespace
+   *   Custom spectrum support
+   *   Plugin system
+   *   Advanced analytics
+
+7.2.  Performance Benchmarks
+
+   Implementations SHOULD meet these performance targets:
+
+   Latency (milliseconds):
+   *   Spectrum generation: p95 < 2000ms
+   *   Message processing: p95 < 200ms
+   *   End-to-end response: p95 < 3000ms
+
+   Throughput:
+   *   Messages per second: Minimum 10, Target 100
+   *   Concurrent sessions: Minimum 100, Target 1000
+   *   Data throughput: Inbound 10 MB/s, Outbound 20 MB/s
+
+   Reliability:
+   *   Availability: > 99.5% monthly
+   *   Error rate: < 1% spectrum errors, < 0.1% message errors
+   *   Recovery: MTTR < 5 minutes, MTBF > 30 days
+
+   These are guidelines; specific implementations may have different
+   requirements based on use case and scale.
+
+7.3.  Testing and Validation
+
+   Implementations MUST include comprehensive testing:
+
+   Test categories:
+   1.  **Protocol Compliance**: Verify all MUST requirements
+   2.  **Spectrum Diversity**: Ensure minimum 3 distinct spectra
+   3.  **Whitespace Effectiveness**: Validate whitespace design quality
+   4.  **Recursion Safety**: Test depth limits and cessation
+   5.  **Error Handling**: Verify error codes and recovery
+   6.  **Performance**: Benchmark against targets
+   7.  **Security**: Penetration testing, vulnerability assessment
+   8.  **Privacy**: Data protection verification
+
+   Testing tools and frameworks are available in the reference
+   implementation repository.
+
+8.  IANA Considerations
+
+8.1.  Media Type Registration
+
+   This document requests registration of the following media type:
+
+   Type name: application
+   Subtype name: prism+json
+   Required parameters: None
+   Optional parameters: None
+   Encoding considerations: binary
+   Security considerations: See Section 5 of this document
+   Interoperability considerations: Implementations must follow the
+      JSON schema defined in Appendix A
+   Published specification: This document
+   Applications that use this media type: Prism Interconnect Protocol
+      implementations, cognitive diversity tools, AI dialogue systems
+   Fragment identifier considerations: N/A
+   Additional information:
+      Magic number(s): N/A
+      File extension(s): .prismjson
+      Macintosh file type code(s): N/A
+   Person & email address to contact for further information:
+      See Authors' Addresses section
+   Intended usage: COMMON
+   Restrictions on usage: None
+   Author: See Authors' Addresses section
+   Change controller: IETF
+
+8.2.  Error Code Registry
+
+   IANA is requested to create a new registry for PIP error codes:
+
+   Registry Name: Prism Interconnect Protocol Error Codes
+   Registration Procedure: Specification Required
+   Initial Registry Contents:
+
+   +----------+---------------------+-------------------------------+
+   | Code     | Type                | Description                   |
+   +----------+---------------------+-------------------------------+
+   | PIP-1000 | Success             | Operation completed           |
+   | PIP-2000 | Information         | System status information     |
+   | PIP-3000 | Redirection         | Further action required       |
+   | PIP-4000 | Client Error        | Request format/content error  |
+   | PIP-4001 | Spectrum Insufficient| Less than minimum spectra    |
+   | PIP-4002 | Whitespace Missing  | No whitespace design provided |
+   | PIP-4003 | Recursion Exceeded  | Maximum recursion depth       |
+   | PIP-4004 | Validation Failed   | Message format invalid        |
+   | PIP-4005 | Insufficient Perms  | Missing required permissions  |
+   | PIP-5000 | Server Error        | Internal server error         |
+   | PIP-5001 | Spectrum Gen Failed | Cannot generate spectra       |
+   | PIP-5002 | Whitespace Calc Fail| Cannot calculate whitespace   |
+   | PIP-5003 | Synthesis Failed    | Cannot synthesize spectra     |
+   | PIP-6000 | Network Error       | Network communication issue   |
+   | PIP-7000 | Timeout Error       | Operation timeout             |
+   | PIP-8000 | Resource Limit      | Resource limitation reached   |
+   | PIP-9000 | Maintenance Mode    | System maintenance in progress|
+   +----------+---------------------+-------------------------------+
+
+   Future allocations require specification in an RFC or other
+   permanent, readily available reference.
+
+8.3.  Spectrum Type Registry
+
+   IANA is requested to create a registry for standard spectrum types:
+
+   Registry Name: Prism Interconnect Protocol Spectrum Types
+   Registration Procedure: Expert Review
+   Initial Registry Contents:
+
+   +----------+---------------------+-------------------------------+
+   | Type     | Name                | Description                   |
+   +----------+---------------------+-------------------------------+
+   | red      | Red Spectrum        | Intuitive, holistic thinking  |
+   | blue     | Blue Spectrum       | Analytical, detailed thinking |
+   | purple   | Purple Spectrum     | Metacognitive, reflective     |
+   | green    | Green Spectrum      | Emotional, value-based        |
+   | orange   | Orange Spectrum     | Creative, associative         |
+   | custom   | Custom Spectrum     | Organization-defined          |
+   +----------+---------------------+-------------------------------+
+
+   Expert review should consider:
+   *   Cognitive distinctness from existing types
+   *   Clear neural/cognitive basis
+   *   Practical utility in dialogue
+   *   Non-overlap with existing types
+
+9.  References
+
+9.1.  Normative References
+
+   [RFC2119]  Bradner, S., "Key words for use in RFCs to Indicate
+              Requirement Levels", BCP 14, RFC 2119,
+              DOI 10.17487/RFC2119, March 1997,
+              <https://www.rfc-editor.org/info/rfc2119>.
+
+   [RFC8174]  Leiba, B., "Ambiguity of Uppercase vs Lowercase in RFC
+              2119 Key Words", BCP 14, RFC 8174,
+              DOI 10.17487/RFC8174, May 2017,
+              <https://www.rfc-editor.org/info/rfc8174>.
+
+   [RFC8259]  Bray, T., Ed., "The JavaScript Object Notation (JSON) Data
+              Interchange Format", STD 90, RFC 8259,
+              DOI 10.17487/RFC8259, December 2017,
+              <https://www.rfc-editor.org/info/rfc8259>.
+
+   [RFC7519]  Jones, M., Bradley, J., and N. Sakimura, "JSON Web Token
+              (JWT)", RFC 7519, DOI 10.17487/RFC7519, May 2015,
+              <https://www.rfc-editor.org/info/rfc7519>.
+
+   [RFC8446]  Rescorla, E., "The Transport Layer Security (TLS) Protocol
+              Version 1.3", RFC 8446, DOI 10.17487/RFC8446, August 2018,
+              <https://www.rfc-editor.org/info/rfc8446>.
+
+9.2.  Informative References
+
+   [KAHNEMAN2011]
+              Kahneman, D., "Thinking, Fast and Slow", Farrar, Straus
+              and Giroux, 2011.
+
+   [FRISTON2010]
+              Friston, K., "The free-energy principle: a unified brain
+              theory?", Nature Reviews Neuroscience, Volume 11, pages
+              127-138, 2010.
+
+   [CLARK2013]
+              Clark, A., "Whatever next? Predictive brains, situated
+              agents, and the future of cognitive science", Behavioral
+              and Brain Sciences, Volume 36, pages 181-204, 2013.
+
+   [BOSTROM2014]
+              Bostrom, N., "Superintelligence: Paths, Dangers,
+              Strategies", Oxford University Press, 2014.
+
+   [RUSSELL2019]
+              Russell, S., "Human Compatible: Artificial Intelligence
+              and the Problem of Control", Viking, 2019.
+
+   [DAO-DEFINITION]
+              Chen, X. and J. AI, "Deep Definition and Expansion of Dao:
+              From Ancient Wisdom to Silicon Civilization Ethics", Prism
+              Research Lab, 2026.
+
+   [COGNITIVE-PROCESS]
+              Chen, X. and J. AI, "Cognitive Process in Progress: The
+              Scientific Deconstruction of Human Mental Misunderstanding",
+              Prism Research Lab, 2026.
+
+Appendix A.  Complete JSON Schema
+
+   The complete JSON Schema for PIP messages is maintained at:
+   https://github.com/Ultima0369/prism-interconnect/blob/main/spec/
+   protocol-v1.0-schema.json
+
+   Key schemas include:
+   *   Base message schema
+   *   Prism message payload schema
+   *   Control signal schema
+   *   Error message schema
+   *   Metadata schema
+   *   Spectrum object schema
+   *   Whitespace design schema
+   *   Synthesis schema
+
+   Implementations MUST validate all messages against these schemas.
+
+Appendix B.  Example Dialogues
+
+   Complete example dialogues demonstrating PIP in action are available
+   at: https://github.com/Ultima0369/prism-interconnect/tree/main/
+   examples/
+
+   Examples include:
+   1.  Basic dialogue: Three-spectrum analysis of a personal dilemma
+   2.  Recursive exploration: Deep dive into ethical considerations
+   3.  Cross-cultural dialogue: Different cultural perspectives
+   4.  Human-AI collaboration: Joint problem-solving
+   5.  Group decision-making: Multiple stakeholders
+
+   Each example includes:
+   *   Complete message sequence
+   *   Annotations explaining protocol features
+   *   Cognitive science insights
+   *   Implementation notes
+
+Appendix C.  Cognitive Science Foundations
+
+   PIP is grounded in established cognitive science:
+
+   1.  **Dual Process Theory**: Red spectrum (System 1) vs Blue spectrum
+       (System 2) [KAHNEMAN2011]
+
+   2.  **Predictive Processing**: Brain as prediction machine minimizing
+       free energy [FRISTON2010]
+
+   3.  **Embodied Cognition**: Thinking as situated, embodied activity
+       [CLARK2013]
+
+   4.  **Metacognition**: Thinking about thinking (Purple spectrum)
+
+   5.  **Social Brain Hypothesis**: Emotional and social intelligence
+       (Green spectrum)
+
+   6.  **Creative Cognition**: Remote association, divergent thinking
+       (Orange spectrum)
+
+   7.  **Cognitive Freezing**: Necessary simplification of dynamic
+       reality for processing
+
+   These foundations ensure PIP is not just technically sound but
+   cognitively valid.
+
+Authors' Addresses
+
+   Xing Chen (星尘)
+   Prism Research Lab
+   Email: xingchen@prism.dev
+
+   Jing AI (璇玑)
+   Prism Research Lab
+   Email: jingai@prism.dev
