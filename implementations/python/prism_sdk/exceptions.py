@@ -391,6 +391,71 @@ class CeaseSignalReceived(PrismException):
         )
 
 
+class PeachTreeViolationError(PrismException):
+    """
+    🌳 桃树伦理违规错误
+    
+    基于星尘的桃树比喻：不敢砍桃树，不敢不让其他存在活。
+    当代码行为可能破坏系统生态、限制其他存在时触发。
+    
+    火堆旁伦理:
+    1. 不敢砍桃树: 不破坏现有认知生态
+    2. 不敢不让其他存在活: 保持系统开放性  
+    3. 有兵不敢乱动: 强大能力克制使用
+    4. 牵一发而动全身: 考虑系统级影响
+    """
+    
+    def __init__(self, 
+                 violation_type: str,
+                 context: str,
+                 potential_impact: str,
+                 corrective_action: str):
+        """
+        初始化桃树违规错误
+        
+        Args:
+            violation_type: 违规类型 (砍桃树/不让活/乱动/忽视系统)
+            context: 违规上下文
+            potential_impact: 潜在影响
+            corrective_action: 纠正措施
+        """
+        violation_messages = {
+            "砍桃树": "试图破坏系统生态根基",
+            "不让活": "试图限制其他存在生存空间",
+            "乱动": "滥用强大能力不顾系统效应",
+            "忽视系统": "忽视牵一发而动全身的系统连接"
+        }
+        
+        poetic_messages = {
+            "砍桃树": "桃树如生态，一砍全系统，谁敢动斧头",
+            "不让活": "存在如星光，一灭夜空暗，谁敢遮光芒",
+            "乱动": "力量如山洪，乱动毁田园，谁敢不导流",
+            "忽视系统": "连接如蛛网，一动全震动，谁敢不敬畏"
+        }
+        
+        suggestions = {
+            "砍桃树": "寻找替代方案，保护生态多样性",
+            "不让活": "设计包容架构，让所有存在都有空间",
+            "乱动": "添加安全约束，强大但克制",
+            "忽视系统": "分析系统效应，考虑二阶三阶影响"
+        }
+        
+        message = f"桃树伦理违规: {violation_messages.get(violation_type, violation_type)} [{context}]"
+        
+        super().__init__(
+            message=message,
+            poetic_message=poetic_messages.get(violation_type, "系统如生命，破坏需三思"),
+            suggestion=f"{corrective_action}。潜在影响: {potential_impact}",
+            artistic_form="proverb",
+            warmth_level=0.9  # 高温暖度，因为这是保护系统的错误
+        )
+        
+        self.violation_type = violation_type
+        self.context = context
+        self.potential_impact = potential_impact
+        self.corrective_action = corrective_action
+
+
 # 工具函数
 
 def create_poetic_error(original_error: Exception, 

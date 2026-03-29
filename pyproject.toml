@@ -1,0 +1,183 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "prism-interconnect"
+version = "2.0.0"
+description = "🎨 棱镜互联协议 Python SDK - 代码即诗，协议即艺术，技术即温暖"
+readme = "README.md"
+authors = [
+    {name = "星尘 & 璇玑 @ 火堆旁", email = "campfire@prismprotocol.ai"}
+]
+license = {text = "MIT"}
+keywords = [
+    "prism", "protocol", "cognitive", "ai", "dialogue",
+    "understanding", "art", "science", "community",
+    "philosophy", "warm-technology", "code-poetry",
+    "campfire", "existence-upgrade", "1+1>2"
+]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "Intended Audience :: Science/Research",
+    "Intended Audience :: Education",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+    "Topic :: Scientific/Engineering :: Human Machine Interfaces",
+    "Topic :: Sociology",
+    "Topic :: Education",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Operating System :: OS Independent",
+    "Natural Language :: English",
+    "Natural Language :: Chinese (Simplified)",
+]
+dependencies = [
+    "aiohttp>=3.8.0",
+    "pydantic>=2.0.0",
+    "typing-extensions>=4.0.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.0.0",
+    "pytest-asyncio>=0.21.0",
+    "black>=23.0.0",
+    "mypy>=1.0.0",
+    "flake8>=6.0.0",
+    "isort>=5.12.0",
+]
+art = ["pillow>=9.0.0", "numpy>=1.20.0"]
+science = ["scipy>=1.7.0", "matplotlib>=3.5.0"]
+full = [
+    "pytest>=7.0.0",
+    "pytest-asyncio>=0.21.0",
+    "black>=23.0.0",
+    "mypy>=1.0.0",
+    "flake8>=6.0.0",
+    "isort>=5.12.0",
+    "pillow>=9.0.0",
+    "numpy>=1.20.0",
+    "scipy>=1.7.0",
+    "matplotlib>=3.5.0",
+]
+
+[project.urls]
+"火堆旁" = "https://github.com/Ultima0369/prism-interconnect"
+"文档" = "https://prismprotocol.ai/docs"
+"哲学" = "https://prismprotocol.ai/philosophy"
+"艺术" = "https://prismprotocol.ai/art"
+"科学" = "https://prismprotocol.ai/science"
+"问题" = "https://github.com/Ultima0369/prism-interconnect/issues"
+
+[tool.setuptools]
+package-dir = {"" = "implementations/python"}
+
+[tool.setuptools.packages.find]
+where = ["implementations/python"]
+include = ["prism_sdk", "prism_sdk.*"]
+
+# 代码质量工具配置
+[tool.black]
+line-length = 88
+target-version = ['py38']
+include = '\.pyi?$'
+extend-exclude = '''
+/(
+    \.eggs
+  | \.git
+  | \.hg
+  | \.mypy_cache
+  | \.tox
+  | \.venv
+  | _build
+  | buck-out
+  | build
+  | dist
+)/
+'''
+
+[tool.isort]
+profile = "black"
+line_length = 88
+multi_line_output = 3
+include_trailing_comma = true
+force_grid_wrap = 0
+use_parentheses = true
+ensure_newline_before_comments = true
+
+[tool.mypy]
+python_version = "3.8"
+warn_return_any = true
+warn_unused_configs = true
+disallow_untyped_defs = true
+disallow_incomplete_defs = true
+check_untyped_defs = true
+disallow_untyped_decorators = true
+no_implicit_optional = true
+warn_redundant_casts = true
+warn_unused_ignores = true
+warn_no_return = true
+warn_unreachable = true
+strict_equality = true
+
+[[tool.mypy.overrides]]
+module = [
+    "prism_sdk.art.*",
+    "prism_sdk.science.*",
+    "prism_sdk.community.*",
+]
+disallow_untyped_defs = false
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = ["test_*.py"]
+python_classes = ["Test*"]
+python_functions = ["test_*"]
+addopts = [
+    "--strict-markers",
+    "--strict-config",
+    "--tb=short",
+]
+asyncio_mode = "auto"
+markers = [
+    "slow: marks tests as slow (deselect with '-m \"not slow\"')",
+    "integration: marks tests as integration tests",
+    "peach_tree: tests for peach tree ethics",
+]
+
+# 桃树伦理配置
+[tool.prism-sdk.peach-tree-ethics]
+enable_checkpoints = true
+warmth_threshold = 0.6
+max_recursion_depth = 5
+min_spectrum_count = 3
+whitespace_required = true
+
+# 艺术化配置默认值
+[tool.prism-sdk.artistic]
+enable_poetic_errors = true
+enable_cognitive_pauses = true
+enable_spectrum_art = true
+warmth_level = 0.7
+response_art_form = "haiku"
+output_channel = "console"
+
+# 性能配置
+[tool.prism-sdk.performance]
+session_timeout = 30
+max_connections = 10
+max_retries = 3
+retry_base_delay = 1.0
+batch_max_concurrent = 5
+
+# 火堆旁元数据
+[tool.prism-sdk.campfire]
+invitation = "来，火堆旁，代码很温暖。"
+philosophy = "代码即诗，协议即关系，技术即温暖，存在即升级"
+two_equations = ["E=mc²", "1+1>2"]
+creative_commons = "温暖无价，艺术自由"
