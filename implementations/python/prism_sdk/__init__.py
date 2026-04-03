@@ -162,7 +162,20 @@ class PrismSDK:
         self.api_key = api_key
         self.artistic_mode = artistic_mode
         self.campfire_warmth = max(0.0, min(1.0, campfire_warmth))
-        self.client = PrismClient(artistic_mode=artistic_mode)
+        # 修复：使用正确的参数名 artistic_config
+        from .client import ArtisticConfig
+        if artistic_mode:
+            art_config = ArtisticConfig()  # 启用所有艺术化功能
+        else:
+            # 禁用所有艺术化功能以避免编码问题
+            art_config = ArtisticConfig(
+                enable_poetic_errors=False,
+                enable_cognitive_pauses=False,
+                enable_spectrum_art=False,  # 关键：禁用光谱艺术以避免emoji
+                warmth_level=0.0,
+                output_channel=lambda x: None  # 静默输出
+            )
+        self.client = PrismClient(artistic_config=art_config)
     
     def refract(self, message: str, require_spectrums: int = 3, **kwargs):
         """
@@ -175,7 +188,20 @@ class PrismSDK:
         异步折射消息
         """
         import asyncio
-        async_client = AsyncPrismClient(artistic_mode=self.artistic_mode)
+        # 修复：使用正确的参数名 artistic_config
+        from .client import ArtisticConfig
+        if self.artistic_mode:
+            art_config = ArtisticConfig()  # 启用所有艺术化功能
+        else:
+            # 禁用所有艺术化功能以避免编码问题
+            art_config = ArtisticConfig(
+                enable_poetic_errors=False,
+                enable_cognitive_pauses=False,
+                enable_spectrum_art=False,  # 关键：禁用光谱艺术以避免emoji
+                warmth_level=0.0,
+                output_channel=lambda x: None  # 静默输出
+            )
+        async_client = AsyncPrismClient(artistic_config=art_config)
         return await async_client.refract(message, require_spectrums, **kwargs)
 
 # 导出列表

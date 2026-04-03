@@ -119,10 +119,16 @@ class PrismClient:
             "understanding_depth_trend": []
         }
         
-        self._artistic_init()
+        # 只有艺术化配置存在时才进行艺术化初始化
+        if self.artistic_config:
+            self._artistic_init()
     
     def _artistic_init(self):
         """艺术化初始化 (优化版)"""
+        # 安全性检查：确保artistic_config不为None
+        if not self.artistic_config:
+            return
+        
         if self.artistic_config.enable_spectrum_art:
             output = self.artistic_config.output_channel
             output("🎭 棱镜客户端初始化中...")
