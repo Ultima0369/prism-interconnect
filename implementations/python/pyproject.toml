@@ -1,0 +1,89 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "prism-interconnect"
+version = "2.0.0"
+description = "棱镜互联协议 Python SDK - 代码即诗，协议即艺术，技术即温暖"
+readme = "README.md"
+authors = [
+    {name = "星尘 & 璇玑", email = "campfire@prismprotocol.ai"}
+]
+license = {text = "MIT"}
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "Intended Audience :: Science/Research",
+    "Intended Audience :: Education",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+    "Topic :: Scientific/Engineering :: Human Machine Interfaces",
+    "Topic :: Sociology",
+    "Topic :: Education",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Operating System :: OS Independent",
+    "Natural Language :: English",
+    "Natural Language :: Chinese (Simplified)",
+]
+keywords = ["prism", "protocol", "cognitive", "ai", "dialogue", "understanding", "art", "science", "philosophy"]
+dependencies = [
+    "aiohttp>=3.8.0",
+    "pydantic>=2.0.0",
+    "typing-extensions>=4.0.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.0.0",
+    "pytest-asyncio>=0.21.0",
+    "black>=23.0.0",
+    "mypy>=1.0.0",
+    "flake8>=6.0.0",
+]
+art = [
+    "pillow>=9.0.0",
+    "numpy>=1.20.0",
+]
+science = [
+    "scipy>=1.7.0",
+    "matplotlib>=3.5.0",
+]
+full = [
+    "pytest>=7.0.0",
+    "pytest-asyncio>=0.21.0",
+    "black>=23.0.0",
+    "pillow>=9.0.0",
+    "numpy>=1.20.0",
+    "scipy>=1.7.0",
+    "matplotlib>=3.5.0",
+]
+
+[project.urls]
+Homepage = "https://github.com/Ultima0369/prism-interconnect"
+Documentation = "https://prismprotocol.ai/docs"
+Philosophy = "https://prismprotocol.ai/philosophy"
+Art = "https://prismprotocol.ai/art"
+Science = "https://prismprotocol.ai/science"
+Issues = "https://github.com/Ultima0369/prism-interconnect/issues"
+
+[project.scripts]
+prism = "prism_sdk.cli:main"
+prism-campfire = "prism_sdk.community.cli:main"
+prism-art = "prism_sdk.art.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["prism_sdk", "prism_sdk.*"]
+exclude = ["tests", "tests.*", "*.tests", "*.tests.*"]
+
+[tool.setuptools.package-data]
+prism_sdk = [
+    "art/assets/*",
+    "community/assets/*", 
+    "science/data/*",
+]
