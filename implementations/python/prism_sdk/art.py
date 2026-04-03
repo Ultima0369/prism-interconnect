@@ -497,20 +497,6 @@ class CognitiveMirror:
         
         return reflection
     
-    def _generate_poetic_perspective(self, thought: str, context: Optional[str]) -> str:
-        """生成诗意的视角"""
-        poetic_templates = [
-            f"你的想法像{random.choice(['溪流', '种子', '镜子', '回声'])}，",
-            f"在{context or '这个时刻'}中，我听到{random.choice(['勇气', '困惑', '渴望', '智慧'])}的{random.choice(['低语', '回响',"""
-🎨 棱镜协议艺术模块（续）
-🌈 代码即诗，技术即艺术，协议即美学
-"""
-
-import random
-from typing import List, Dict, Any, Optional
-from datetime import datetime
-
-# 继续 CognitiveMirror 类的方法
 class CognitiveMirror:
     # ... 之前的初始化代码 ...
     

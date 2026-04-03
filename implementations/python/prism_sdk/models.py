@@ -96,7 +96,7 @@ class Spectrum(BaseModel):
         return v
     
     class Config:
-        schema_extra = {
+        json_schema_extra = {
             "example": {
                 "type": "red",
                 "name": "直觉整体视角",
@@ -130,7 +130,7 @@ class Whitespace(BaseModel):
         return v
     
     class Config:
-        schema_extra = {
+        json_schema_extra = {
             "example": {
                 "type": "integration",
                 "duration_suggestion": 45,
@@ -157,7 +157,7 @@ class Synthesis(BaseModel):
         return v
     
     class Config:
-        schema_extra = {
+        json_schema_extra = {
             "example": {
                 "emerging_insights": [
                     "工作与生活的平衡本质上是能量管理的艺术",
@@ -220,7 +220,7 @@ class PrismMessage(BaseModel):
         return values
     
     class Config:
-        schema_extra = {
+        json_schema_extra = {
             "example": {
                 "query": "如何平衡工作与生活？",
                 "context": {
@@ -280,7 +280,7 @@ class PrismResponse(BaseModel):
         return v
     
     class Config:
-        schema_extra = {
+        json_schema_extra = {
             "example": {
                 "message_id": "123e4567-e89b-12d3-a456-426614174000",
                 "timestamp": "2026-03-25T08:30:00Z",
@@ -309,7 +309,7 @@ class ValidationResult(BaseModel):
     suggestions: List[str] = Field(default_factory=list, description="改进建议")
     
     class Config:
-        schema_extra = {
+        json_schema_extra = {
             "example": {
                 "valid": True,
                 "errors": [],
@@ -336,7 +336,7 @@ class SessionConfig(BaseModel):
         return v
     
     class Config:
-        schema_extra = {
+        json_schema_extra = {
             "example": {
                 "min_spectrums": 3,
                 "max_spectrums": 5,
@@ -374,7 +374,7 @@ class UserPreferences(BaseModel):
         return v
     
     class Config:
-        schema_extra = {
+        json_schema_extra = {
             "example": {
                 "preferred_spectrum_types": ["red", "blue", "purple"],
                 "preferred_whitespace_duration": {
@@ -397,7 +397,7 @@ class WhitespaceConfig(BaseModel):
     enable_creation: bool = Field(True, description="启用创造留白")
     
     class Config:
-        schema_extra = {
+        json_schema_extra = {
             "example": {
                 "duration_seconds": 60,
                 "enable_integration": True,
@@ -414,7 +414,7 @@ class CeaseSignal(BaseModel):
     safety_threshold: float = Field(0.8, description="安全阈值", ge=0.0, le=1.0)
     
     class Config:
-        schema_extra = {
+        json_schema_extra = {
             "example": {
                 "enabled": True,
                 "max_recursion_depth": 5,
@@ -431,7 +431,7 @@ class CognitiveMetadata(BaseModel):
     spectrum_count: int = Field(3, description="光谱数量", ge=3, le=10)
     
     class Config:
-        schema_extra = {
+        json_schema_extra = {
             "example": {
                 "session_id": "session_123",
                 "timestamp": "2026-03-28T10:30:00",
@@ -450,7 +450,7 @@ class PrismRequest(BaseModel):
     cognitive_metadata: Optional[CognitiveMetadata] = Field(None, description="认知元数据")
     
     class Config:
-        schema_extra = {
+        json_schema_extra = {
             "example": {
                 "message": "什么是理解？",
                 "require_spectrums": 3,

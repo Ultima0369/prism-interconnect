@@ -103,10 +103,17 @@ class ArtisticConfig:
     
     配置SDK的艺术表现和行为。
     这不是美化，这是存在表达。
+    
+    🔥 火堆旁设计:
+    - 诗意错误: 让错误有温度，有诗意
+    - 认知暂停: 尊重思考需要时间
+    - 光谱艺术: 让多元视角可视化
+    - 桃树检查: 伦理不是选项，是基石
     """
     enable_poetic_errors: bool = True
     enable_cognitive_pauses: bool = True
     enable_spectrum_art: bool = True
+    enable_peach_tree_checkpoints: bool = True  # 桃树伦理检查点
     warmth_level: float = 0.7
     response_art_form: ArtisticForm = ArtisticForm.HAIKU
     output_channel: OutputChannel = OutputChannel.CONSOLE

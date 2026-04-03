@@ -58,14 +58,33 @@ def _artistic_welcome():
     print(f"[火] 邀请: {__campfire_invitation__}")
     print("=" * 40)
 
-# 自动显示欢迎信息
-try:
-    _artistic_welcome()
-except:
-    pass  # 安静失败，不破坏导入
+# 自动显示欢迎信息（默认禁用，避免导入时打印）
+# 可以通过环境变量 PRISM_SHOW_WELCOME=1 启用
+import os
+if os.environ.get('PRISM_SHOW_WELCOME') == '1':
+    try:
+        _artistic_welcome()
+    except:
+        pass  # 安静失败，不破坏导入
 
-# 🧠 核心模块
-from .client import PrismClient, AsyncPrismClient
+# 🧠 核心模块 (重构版本)
+# 从新模块导入客户端类
+try:
+    from .client_sync import PrismClient
+    from .client_async import AsyncPrismClient
+except ImportError:
+    # 回退到旧版本 (为了兼容性)
+    try:
+        from .client import PrismClient, AsyncPrismClient
+    except ImportError:
+        # 如果都失败，创建存根类
+        class PrismClient:
+            def __init__(self, *args, **kwargs):
+                raise ImportError("无法导入PrismClient，请检查模块安装")
+        
+        class AsyncPrismClient:
+            def __init__(self, *args, **kwargs):
+                raise ImportError("无法导入AsyncPrismClient，请检查模块安装")
 from .models import (
     PrismMessage,
     PrismResponse,
@@ -163,7 +182,7 @@ class PrismSDK:
         self.artistic_mode = artistic_mode
         self.campfire_warmth = max(0.0, min(1.0, campfire_warmth))
         # 修复：使用正确的参数名 artistic_config
-        from .client import ArtisticConfig
+        from .config import ArtisticConfig
         if artistic_mode:
             art_config = ArtisticConfig()  # 启用所有艺术化功能
         else:
@@ -189,7 +208,7 @@ class PrismSDK:
         """
         import asyncio
         # 修复：使用正确的参数名 artistic_config
-        from .client import ArtisticConfig
+        from .config import ArtisticConfig
         if self.artistic_mode:
             art_config = ArtisticConfig()  # 启用所有艺术化功能
         else:
