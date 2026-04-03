@@ -205,7 +205,7 @@ class PrismMessage(BaseModel):
         
         return v
     
-    @root_validator
+    @root_validator(skip_on_failure=True)
     def validate_message_structure(cls, values):
         """验证消息整体结构"""
         # 如果有合成结果，检查其与光谱的关系
@@ -384,5 +384,86 @@ class UserPreferences(BaseModel):
                 },
                 "cognitive_style": "balanced",
                 "learning_goals": ["提高决策质量", "增强创造性思维"]
+            }
+        }
+
+
+# 缺失的类 - 为兼容性添加
+class WhitespaceConfig(BaseModel):
+    """留白配置"""
+    duration_seconds: int = Field(60, description="留白时长（秒）", ge=10, le=600)
+    enable_integration: bool = Field(True, description="启用整合留白")
+    enable_reflection: bool = Field(True, description="启用反思留白")
+    enable_creation: bool = Field(True, description="启用创造留白")
+    
+    class Config:
+        schema_extra = {
+            "example": {
+                "duration_seconds": 60,
+                "enable_integration": True,
+                "enable_reflection": True,
+                "enable_creation": True
+            }
+        }
+
+
+class CeaseSignal(BaseModel):
+    """知止信号配置"""
+    enabled: bool = Field(True, description="启用知止机制")
+    max_recursion_depth: int = Field(5, description="最大递归深度", ge=1, le=20)
+    safety_threshold: float = Field(0.8, description="安全阈值", ge=0.0, le=1.0)
+    
+    class Config:
+        schema_extra = {
+            "example": {
+                "enabled": True,
+                "max_recursion_depth": 5,
+                "safety_threshold": 0.8
+            }
+        }
+
+
+class CognitiveMetadata(BaseModel):
+    """认知元数据"""
+    session_id: str = Field(default_factory=lambda: str(uuid4()), description="会话ID")
+    timestamp: datetime = Field(default_factory=datetime.now, description="时间戳")
+    processing_time_ms: Optional[int] = Field(None, description="处理时间（毫秒）")
+    spectrum_count: int = Field(3, description="光谱数量", ge=3, le=10)
+    
+    class Config:
+        schema_extra = {
+            "example": {
+                "session_id": "session_123",
+                "timestamp": "2026-03-28T10:30:00",
+                "processing_time_ms": 1200,
+                "spectrum_count": 3
+            }
+        }
+
+
+class PrismRequest(BaseModel):
+    """棱镜请求"""
+    message: str = Field(..., description="消息内容", min_length=1, max_length=5000)
+    require_spectrums: int = Field(3, description="需要的光谱数量", ge=3, le=10)
+    whitespace_config: WhitespaceConfig = Field(default_factory=WhitespaceConfig, description="留白配置")
+    cease_config: CeaseSignal = Field(default_factory=CeaseSignal, description="知止配置")
+    cognitive_metadata: Optional[CognitiveMetadata] = Field(None, description="认知元数据")
+    
+    class Config:
+        schema_extra = {
+            "example": {
+                "message": "什么是理解？",
+                "require_spectrums": 3,
+                "whitespace_config": {
+                    "duration_seconds": 60,
+                    "enable_integration": True,
+                    "enable_reflection": True,
+                    "enable_creation": True
+                },
+                "cease_config": {
+                    "enabled": True,
+                    "max_recursion_depth": 5,
+                    "safety_threshold": 0.8
+                }
             }
         }

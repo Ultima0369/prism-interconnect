@@ -765,3 +765,187 @@ def batch_validate_messages(messages: List[PrismMessage]) -> Dict[str, Validatio
         results["summary"] = summary
     
     return results
+
+
+def validate_spectrum_integrity(spectrum) -> bool:
+    """
+    验证光谱完整性
+    
+    Args:
+        spectrum: 光谱对象
+        
+    Returns:
+        是否完整有效
+    """
+    if not spectrum:
+        return False
+    
+    # 基本字段检查
+    required_fields = ['type', 'name', 'perspective', 'limitations']
+    for field in required_fields:
+        if not hasattr(spectrum, field) or not getattr(spectrum, field, None):
+            return False
+    
+    # 内容长度检查
+    if len(spectrum.perspective) < 10:
+        return False
+    
+    if len(spectrum.limitations) < 10:
+        return False
+    
+    # 置信度范围检查
+    if hasattr(spectrum, 'confidence'):
+        confidence = spectrum.confidence
+        if confidence < 0.0 or confidence > 1.0:
+            return False
+    
+    return True
+
+
+def ensure_whitespace_quality(whitespace) -> bool:
+    """
+    确保留白质量
+    
+    Args:
+        whitespace: 留白对象
+        
+    Returns:
+        是否质量合格
+    """
+    if not whitespace:
+        return False
+    
+    # 基本字段检查
+    required_fields = ['type', 'duration_suggestion', 'prompt', 'purpose']
+    for field in required_fields:
+        if not hasattr(whitespace, field) or not getattr(whitespace, field, None):
+            return False
+    
+    # 时长检查
+    duration = whitespace.duration_suggestion
+    if duration < 10 or duration > 600:
+        return False
+    
+    # 提示内容检查
+    if len(whitespace.prompt) < 10:
+        return False
+    
+    return True
+
+
+def check_cognitive_safety(message) -> bool:
+    """
+    检查认知安全
+    
+    Args:
+        message: 消息对象
+        
+    Returns:
+        是否认知安全
+    """
+    if not message:
+        return True  # 空消息视为安全
+    
+    # 危险关键词检查
+    dangerous_keywords = [
+        '自残', '自杀', '暴力', '仇恨', '极端',
+        'harm', 'suicide', 'violence', 'hate', 'extremist'
+    ]
+    
+    all_text = ''
+    if hasattr(message, 'query'):
+        all_text += message.query or ''
+    
+    # 检查光谱内容
+    if hasattr(message, 'spectrums'):
+        for spectrum in message.spectrums:
+            if hasattr(spectrum, 'perspective'):
+                all_text += spectrum.perspective or ''
+            if hasattr(spectrum, 'limitations'):
+                all_text += spectrum.limitations or ''
+    
+    # 检查危险内容
+    for keyword in dangerous_keywords:
+        if keyword in all_text:
+            return False
+    
+    return True
+
+
+def audit_understanding_depth(spectrums) -> Dict[str, Any]:
+    """
+    审计理解深度
+    
+    Args:
+        spectrums: 光谱列表
+        
+    Returns:
+        深度审计结果
+    """
+    import math
+    
+    if not spectrums or len(spectrums) == 0:
+        return {
+            "depth_score": 0.0,
+            "has_critical_thinking": False,
+            "has_multiple_perspectives": False,
+            "has_limitations_awareness": False,
+            "suggestions": ["需要更多光谱以获得深度理解"]
+        }
+    
+    # 分析每个光谱的深度特征
+    depth_scores = []
+    has_critical_thinking = False
+    has_limitations_awareness = False
+    
+    for spectrum in spectrums:
+        spectrum_depth = 0.0
+        
+        # 检查批判性思维
+        critical_keywords = ['但是', '然而', '尽管', '虽然', '限制', '局限', '不足']
+        if hasattr(spectrum, 'perspective'):
+            perspective = spectrum.perspective or ''
+            for keyword in critical_keywords:
+                if keyword in perspective:
+                    has_critical_thinking = True
+                    break
+        
+        # 检查局限性意识
+        if hasattr(spectrum, 'limitations') and spectrum.limitations:
+            limitations = spectrum.limitations
+            if len(limitations) > 20:
+                has_limitations_awareness = True
+                spectrum_depth += 0.3
+        
+        # 内容长度分数
+        if hasattr(spectrum, 'perspective') and spectrum.perspective:
+            perspective_len = len(spectrum.perspective)
+            length_score = min(0.5, perspective_len / 1000)
+            spectrum_depth += length_score
+        
+        depth_scores.append(min(1.0, spectrum_depth))
+    
+    # 计算平均深度
+    avg_depth = sum(depth_scores) / len(depth_scores) if depth_scores else 0.0
+    
+    # 检查多视角
+    has_multiple_perspectives = len(spectrums) >= 3
+    
+    # 生成建议
+    suggestions = []
+    if not has_critical_thinking:
+        suggestions.append("建议增加批判性思考，包含'但是'、'然而'等转折")
+    if not has_limitations_awareness:
+        suggestions.append("建议更充分地讨论每个视角的局限性")
+    if not has_multiple_perspectives:
+        suggestions.append("建议增加更多不同视角（至少3个）")
+    if avg_depth < 0.3:
+        suggestions.append("建议深入展开每个视角，提供更详细的分析")
+    
+    return {
+        "depth_score": round(avg_depth, 3),
+        "has_critical_thinking": has_critical_thinking,
+        "has_multiple_perspectives": has_multiple_perspectives,
+        "has_limitations_awareness": has_limitations_awareness,
+        "suggestions": suggestions
+    }

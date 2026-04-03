@@ -456,6 +456,56 @@ class PeachTreeViolationError(PrismException):
         self.corrective_action = corrective_action
 
 
+class ValidationError(PrismException):
+    """
+    🔍 验证错误
+    
+    数据验证失败时的异常。
+    这不是失败，而是认知边界的发现。
+    """
+    
+    def __init__(self, 
+                 message: str,
+                 field: Optional[str] = None,
+                 value: Any = None,
+                 expected: Any = None,
+                 suggestion: Optional[str] = None):
+        """
+        初始化验证错误
+        
+        Args:
+            message: 错误消息
+            field: 相关字段
+            value: 实际值
+            expected: 期望值
+            suggestion: 建议
+        """
+        full_message = f"验证失败: {message}"
+        if field:
+            full_message += f" [字段: {field}]"
+        if value is not None:
+            full_message += f" [值: {value}]"
+        if expected is not None:
+            full_message += f" [期望: {expected}]"
+        
+        poetic_message = "边界如镜子，照见认知限，修正即成长"
+        
+        if not suggestion:
+            suggestion = "检查输入数据，确保符合协议规范"
+        
+        super().__init__(
+            message=full_message,
+            poetic_message=poetic_message,
+            suggestion=suggestion,
+            artistic_form="haiku",
+            warmth_level=0.7
+        )
+        
+        self.field = field
+        self.value = value
+        self.expected = expected
+
+
 # 工具函数
 
 def create_poetic_error(original_error: Exception, 

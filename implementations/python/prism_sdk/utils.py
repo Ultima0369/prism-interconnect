@@ -535,3 +535,152 @@ def benchmark_function(func, *args, **kwargs) -> Dict[str, Any]:
         "elapsed_seconds": timer.get_elapsed(),
         "success": True
     }
+
+
+def create_cognitive_pause(duration: int = 3) -> Dict[str, Any]:
+    """
+    创建认知暂停
+    
+    Args:
+        duration: 暂停时长（秒）
+        
+    Returns:
+        暂停数据
+    """
+    import time
+    
+    start_time = time.time()
+    
+    # 实际暂停
+    time.sleep(duration)
+    
+    end_time = time.time()
+    elapsed = end_time - start_time
+    
+    return {
+        "type": "cognitive_pause",
+        "duration_seconds": duration,
+        "actual_elapsed_seconds": elapsed,
+        "timestamp": format_timestamp(),
+        "purpose": "为认知处理创造空间"
+    }
+
+
+def measure_understanding_depth(spectrums) -> float:
+    """
+    测量理解深度
+    
+    Args:
+        spectrums: 光谱列表
+        
+    Returns:
+        深度分数（0.0-1.0）
+    """
+    if not spectrums or len(spectrums) == 0:
+        return 0.0
+    
+    total_depth = 0.0
+    count = 0
+    
+    for spectrum in spectrums:
+        # 计算每个光谱的深度
+        spectrum_depth = 0.0
+        
+        # 基于内容长度
+        if hasattr(spectrum, 'perspective') and spectrum.perspective:
+            perspective_len = len(spectrum.perspective)
+            # 长度分数：100字以下0.1，500字以上0.5
+            length_score = min(0.5, perspective_len / 1000)
+            spectrum_depth += length_score * 0.3
+        
+        # 基于推理过程
+        if hasattr(spectrum, 'reasoning') and spectrum.reasoning:
+            reasoning_len = len(spectrum.reasoning)
+            reasoning_score = min(0.5, reasoning_len / 500)
+            spectrum_depth += reasoning_score * 0.3
+        
+        # 基于局限性分析
+        if hasattr(spectrum, 'limitations') and spectrum.limitations:
+            limitations_len = len(spectrum.limitations)
+            limitations_score = min(0.4, limitations_len / 250)
+            spectrum_depth += limitations_score * 0.4
+        
+        total_depth += min(1.0, spectrum_depth)
+        count += 1
+    
+    if count == 0:
+        return 0.0
+    
+    return round(total_depth / count, 3)
+
+
+def calculate_spectrum_balance(spectrums) -> float:
+    """
+    计算光谱平衡度
+    
+    Args:
+        spectrums: 光谱列表
+        
+    Returns:
+        平衡度分数（0.0-1.0）
+    """
+    if not spectrums or len(spectrums) < 3:
+        return 0.0
+    
+    # 收集光谱类型
+    type_counts = {}
+    for spectrum in spectrums:
+        if hasattr(spectrum, 'type'):
+            spectrum_type = spectrum.type
+            type_counts[spectrum_type] = type_counts.get(spectrum_type, 0) + 1
+    
+    # 计算类型多样性
+    unique_types = len(type_counts)
+    total_spectrums = len(spectrums)
+    
+    if unique_types < 2:
+        return 0.0
+    
+    # 多样性分数：类型越多越好，但也要避免单一类型过多
+    diversity_score = min(1.0, unique_types / 5)  # 最多5种类型
+    
+    # 均匀度分数：类型分布是否均匀
+    evenness_scores = []
+    for count in type_counts.values():
+        proportion = count / total_spectrums
+        # 理想比例：每种类型占总数的1/unique_types
+        ideal_proportion = 1.0 / unique_types
+        # 偏离理想比例的程度
+        deviation = abs(proportion - ideal_proportion)
+        evenness = 1.0 - deviation
+        evenness_scores.append(max(0.0, evenness))
+    
+    evenness_score = sum(evenness_scores) / len(evenness_scores) if evenness_scores else 0.0
+    
+    # 综合平衡分数
+    balance_score = (diversity_score * 0.6) + (evenness_score * 0.4)
+    
+    return round(balance_score, 3)
+
+
+def serialize_cognitive_moment(data):
+    """序列化认知时刻"""
+    import json
+    return json.dumps(data, ensure_ascii=False, indent=2)
+
+
+def deserialize_phenomenal_flow(json_str):
+    """反序列化现象流"""
+    import json
+    return json.loads(json_str)
+
+
+def compress_intentionality_vector(data):
+    """压缩意向性向量"""
+    import json
+    import gzip
+    import base64
+    
+    json_str = json.dumps(data, ensure_ascii=False)
+    compressed = gzip.compress(json_str.encode('utf-8'))
+    return base64.b64encode(compressed).decode('utf-8')
