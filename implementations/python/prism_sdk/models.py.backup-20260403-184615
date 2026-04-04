@@ -1,0 +1,469 @@
+"""
+🎨 models.py - 棱镜协议数据模型
+
+🔥 火堆旁提醒：
+这不是普通的数据模型，这是认知的骨架，理解的蓝图。
+每个类都是一面认知镜子，每个字段都是一扇理解窗户。
+
+🧠 认知设计：
+- 光谱类型：多元视角的编码
+- 留白配置：思考空间的量化  
+- 知止信号：认知资源的保护
+- 元数据：理解过程的记录
+
+🦞 存在意义：
+为认知对话提供结构，为理解过程提供框架，
+让抽象的思想成为可操作的数据，让深度的对话成为可分析的艺术。
+
+🎯 使用示例：
+from prism_sdk.models import Spectrum, PrismRequest, PrismResponse
+request = PrismRequest(message="什么是理解？", require_spectrums=3)
+"""
+
+from enum import Enum
+from typing import List, Optional, Dict, Any, Union
+from datetime import datetime
+from pydantic import BaseModel, Field, validator, root_validator
+from uuid import uuid4
+
+
+class SpectrumType(str, Enum):
+    """光谱类型枚举"""
+    RED = "red"        # 直觉、快速、整体
+    BLUE = "blue"      # 分析、慢速、细节
+    PURPLE = "purple"  # 元认知、监控、调节
+    GREEN = "green"    # 情感、价值、意义
+    ORANGE = "orange"  # 创造、联想、新颖
+    CUSTOM = "custom"  # 自定义光谱
+
+
+class WhitespaceType(str, Enum):
+    """留白类型枚举"""
+    INTEGRATION = "integration"    # 整合留白 (30-60秒)
+    REFLECTION = "reflection"      # 反思留白 (60-180秒)
+    CREATIVE = "creative"          # 创造留白 (可变时长)
+
+
+class ErrorCode(str, Enum):
+    """错误代码枚举"""
+    SUCCESS = "PIP-1000"
+    INFO = "PIP-2000"
+    REDIRECT = "PIP-3000"
+    CLIENT_ERROR = "PIP-4000"
+    SPECTRUM_INSUFFICIENT = "PIP-4001"
+    WHITESPACE_MISSING = "PIP-4002"
+    RECURSION_LIMIT = "PIP-4003"
+    VALIDATION_FAILED = "PIP-4004"
+    PERMISSION_DENIED = "PIP-4005"
+    SERVER_ERROR = "PIP-5000"
+    SPECTRUM_GENERATION_FAILED = "PIP-5001"
+    WHITESPACE_CALCULATION_FAILED = "PIP-5002"
+    SYNTHESIS_FAILED = "PIP-5003"
+    NETWORK_ERROR = "PIP-6000"
+    TIMEOUT_ERROR = "PIP-7000"
+    RESOURCE_LIMIT = "PIP-8000"
+    MAINTENANCE_MODE = "PIP-9000"
+
+
+class Spectrum(BaseModel):
+    """光谱数据结构"""
+    type: SpectrumType = Field(..., description="光谱类型")
+    name: str = Field(..., description="光谱名称", min_length=1, max_length=100)
+    perspective: str = Field(..., description="该光谱的独特视角", min_length=10, max_length=2000)
+    confidence: float = Field(0.5, description="置信度 (0.0-1.0)", ge=0.0, le=1.0)
+    reasoning: Optional[str] = Field(None, description="推理过程", max_length=5000)
+    limitations: str = Field(..., description="该视角的局限性", min_length=10, max_length=1000)
+    sources: List[str] = Field(default_factory=list, description="引用来源")
+    emotional_tone: str = Field("neutral", description="情感基调")
+    
+    @validator('confidence')
+    def validate_confidence(cls, v):
+        """验证置信度在合理范围内"""
+        if v < 0.0 or v > 1.0:
+            raise ValueError('置信度必须在0.0到1.0之间')
+        return round(v, 2)
+    
+    @validator('emotional_tone')
+    def validate_emotional_tone(cls, v):
+        """验证情感基调"""
+        valid_tones = [
+            "neutral", "curious", "concerned", "hopeful", 
+            "critical", "supportive", "exploratory", "reflective",
+            "creative", "practical", "ethical", "systemic"
+        ]
+        if v not in valid_tones:
+            raise ValueError(f'情感基调必须是以下之一: {", ".join(valid_tones)}')
+        return v
+    
+    class Config:
+        json_schema_extra = {
+            "example": {
+                "type": "red",
+                "name": "直觉整体视角",
+                "perspective": "从整体感受和模式识别出发，快速把握问题的核心本质...",
+                "confidence": 0.7,
+                "reasoning": "基于多年的经验积累和模式识别能力...",
+                "limitations": "可能忽略细节，过度依赖直觉可能导致偏见...",
+                "sources": ["个人经验", "相关案例"],
+                "emotional_tone": "curious"
+            }
+        }
+
+
+class Whitespace(BaseModel):
+    """留白数据结构"""
+    type: WhitespaceType = Field(..., description="留白类型")
+    duration_suggestion: int = Field(..., description="建议时长(秒)", ge=10, le=600)
+    prompt: str = Field(..., description="留白期间的思考提示", min_length=10, max_length=1000)
+    purpose: str = Field(..., description="留白的目的和预期效果", min_length=10, max_length=500)
+    
+    @validator('duration_suggestion')
+    def validate_duration(cls, v, values):
+        """根据留白类型验证时长"""
+        if 'type' in values:
+            if values['type'] == WhitespaceType.INTEGRATION and (v < 30 or v > 60):
+                raise ValueError('整合留白建议时长为30-60秒')
+            elif values['type'] == WhitespaceType.REFLECTION and (v < 60 or v > 180):
+                raise ValueError('反思留白建议时长为60-180秒')
+            elif values['type'] == WhitespaceType.CREATIVE and v < 30:
+                raise ValueError('创造留白建议时长至少30秒')
+        return v
+    
+    class Config:
+        schema_extra = {
+            "example": {
+                "type": "integration",
+                "duration_suggestion": 45,
+                "prompt": "让刚才的多个视角在脑海中自然沉淀，感受不同观点间的张力与和谐...",
+                "purpose": "帮助认知整合，形成更完整的理解框架"
+            }
+        }
+
+
+class Synthesis(BaseModel):
+    """合成数据结构"""
+    emerging_insights: List[str] = Field(default_factory=list, description="涌现的洞见")
+    new_questions: List[str] = Field(default_factory=list, description="新的问题")
+    action_suggestions: List[str] = Field(default_factory=list, description="行动建议")
+    ethical_considerations: List[str] = Field(default_factory=list, description="伦理考量")
+    
+    @validator('emerging_insights', 'new_questions', 'action_suggestions', 'ethical_considerations')
+    def validate_list_items(cls, v):
+        """验证列表项不为空"""
+        if v:
+            for item in v:
+                if not item.strip():
+                    raise ValueError('列表项不能为空')
+        return v
+    
+    class Config:
+        schema_extra = {
+            "example": {
+                "emerging_insights": [
+                    "工作与生活的平衡本质上是能量管理的艺术",
+                    "不同人生阶段需要不同的平衡策略"
+                ],
+                "new_questions": [
+                    "我的能量峰值在一天中的什么时间？",
+                    "哪些活动真正给我带来能量而非消耗能量？"
+                ],
+                "action_suggestions": [
+                    "尝试记录一周的能量流动模式",
+                    "为不同类型的活动分配不同的时间块"
+                ],
+                "ethical_considerations": [
+                    "平衡不应以牺牲健康为代价",
+                    "需要考虑对他人的责任和承诺"
+                ]
+            }
+        }
+
+
+class PrismMessage(BaseModel):
+    """棱镜消息数据结构"""
+    query: str = Field(..., description="原始问题或陈述", min_length=1, max_length=5000)
+    context: Optional[Dict[str, Any]] = Field(default_factory=dict, description="对话上下文")
+    spectrums: List[Spectrum] = Field(..., description="光谱列表")
+    whitespace: Whitespace = Field(..., description="留白设计")
+    synthesis: Optional[Synthesis] = Field(None, description="合成结果")
+    
+    @validator('spectrums')
+    def validate_spectrums(cls, v):
+        """验证光谱列表"""
+        if len(v) < 3:
+            raise ValueError('至少需要3种光谱')
+        
+        # 检查光谱多样性
+        spectrum_types = [s.type for s in v]
+        if len(set(spectrum_types)) < 2:
+            raise ValueError('光谱类型需要多样性，至少2种不同类型')
+        
+        # 检查是否有重复的光谱名称
+        spectrum_names = [s.name for s in v]
+        if len(set(spectrum_names)) != len(spectrum_names):
+            raise ValueError('光谱名称不能重复')
+        
+        return v
+    
+    @root_validator(skip_on_failure=True)
+    def validate_message_structure(cls, values):
+        """验证消息整体结构"""
+        # 如果有合成结果，检查其与光谱的关系
+        if 'synthesis' in values and values['synthesis']:
+            synthesis = values['synthesis']
+            spectrums = values.get('spectrums', [])
+            
+            # 合成应该基于光谱产生新的洞见
+            if not synthesis.emerging_insights and not synthesis.new_questions:
+                raise ValueError('合成应该产生新的洞见或问题')
+        
+        return values
+    
+    class Config:
+        schema_extra = {
+            "example": {
+                "query": "如何平衡工作与生活？",
+                "context": {
+                    "user_state": {"stress_level": "medium", "time_availability": "limited"},
+                    "previous_topics": ["时间管理", "优先级设定"]
+                },
+                "spectrums": [
+                    {
+                        "type": "red",
+                        "name": "直觉整体视角",
+                        "perspective": "从整体感受出发...",
+                        "confidence": 0.7,
+                        "limitations": "可能忽略细节...",
+                        "emotional_tone": "curious"
+                    },
+                    # ... 更多光谱
+                ],
+                "whitespace": {
+                    "type": "integration",
+                    "duration_suggestion": 45,
+                    "prompt": "让不同视角沉淀...",
+                    "purpose": "认知整合"
+                },
+                "synthesis": {
+                    "emerging_insights": ["平衡是动态过程..."],
+                    "new_questions": ["我的核心价值是什么？"],
+                    "action_suggestions": ["尝试能量记录"],
+                    "ethical_considerations": ["平衡不应牺牲健康"]
+                }
+            }
+        }
+
+
+class PrismResponse(BaseModel):
+    """棱镜响应数据结构"""
+    message_id: str = Field(default_factory=lambda: str(uuid4()), description="消息ID")
+    timestamp: str = Field(default_factory=lambda: datetime.utcnow().isoformat(), description="时间戳")
+    session_id: str = Field(..., description="会话ID")
+    message: PrismMessage = Field(..., description="棱镜消息")
+    metadata: Dict[str, Any] = Field(default_factory=dict, description="元数据")
+    
+    @validator('metadata')
+    def validate_metadata(cls, v):
+        """验证元数据"""
+        # 确保必要的元数据字段
+        if 'recursion_depth' not in v:
+            v['recursion_depth'] = 0
+        if 'max_depth' not in v:
+            v['max_depth'] = 5
+        if 'source' not in v:
+            v['source'] = 'prism-sdk'
+        
+        # 验证递归深度
+        if v['recursion_depth'] > v['max_depth']:
+            raise ValueError('递归深度不能超过最大深度')
+        
+        return v
+    
+    class Config:
+        schema_extra = {
+            "example": {
+                "message_id": "123e4567-e89b-12d3-a456-426614174000",
+                "timestamp": "2026-03-25T08:30:00Z",
+                "session_id": "session-123",
+                "message": {
+                    "query": "如何平衡工作与生活？",
+                    "spectrums": [...],
+                    "whitespace": {...},
+                    "synthesis": {...}
+                },
+                "metadata": {
+                    "recursion_depth": 0,
+                    "max_depth": 5,
+                    "source": "prism-sdk",
+                    "processing_time_ms": 1250
+                }
+            }
+        }
+
+
+class ValidationResult(BaseModel):
+    """验证结果数据结构"""
+    valid: bool = Field(..., description="是否有效")
+    errors: List[str] = Field(default_factory=list, description="错误信息")
+    warnings: List[str] = Field(default_factory=list, description="警告信息")
+    suggestions: List[str] = Field(default_factory=list, description="改进建议")
+    
+    class Config:
+        schema_extra = {
+            "example": {
+                "valid": True,
+                "errors": [],
+                "warnings": ["光谱多样性可以进一步提高"],
+                "suggestions": ["考虑添加一个绿色光谱以增强情感维度"]
+            }
+        }
+
+
+class SessionConfig(BaseModel):
+    """会话配置"""
+    min_spectrums: int = Field(3, description="最小光谱数量", ge=3, le=10)
+    max_spectrums: int = Field(5, description="最大光谱数量", ge=3, le=10)
+    max_recursion_depth: int = Field(5, description="最大递归深度", ge=1, le=10)
+    default_whitespace_type: WhitespaceType = Field(WhitespaceType.INTEGRATION, description="默认留白类型")
+    enable_synthesis: bool = Field(True, description="是否启用合成")
+    require_ethical_considerations: bool = Field(True, description="是否要求伦理考量")
+    
+    @validator('max_spectrums')
+    def validate_max_spectrums(cls, v, values):
+        """验证最大光谱数量"""
+        if 'min_spectrums' in values and v < values['min_spectrums']:
+            raise ValueError('最大光谱数量不能小于最小光谱数量')
+        return v
+    
+    class Config:
+        schema_extra = {
+            "example": {
+                "min_spectrums": 3,
+                "max_spectrums": 5,
+                "max_recursion_depth": 5,
+                "default_whitespace_type": "integration",
+                "enable_synthesis": True,
+                "require_ethical_considerations": True
+            }
+        }
+
+
+class UserPreferences(BaseModel):
+    """用户偏好"""
+    preferred_spectrum_types: List[SpectrumType] = Field(
+        default_factory=lambda: [SpectrumType.RED, SpectrumType.BLUE, SpectrumType.PURPLE],
+        description="偏好的光谱类型"
+    )
+    preferred_whitespace_duration: Dict[WhitespaceType, int] = Field(
+        default_factory=lambda: {
+            WhitespaceType.INTEGRATION: 45,
+            WhitespaceType.REFLECTION: 90,
+            WhitespaceType.CREATIVE: 120
+        },
+        description="偏好的留白时长"
+    )
+    cognitive_style: str = Field("balanced", description="认知风格")
+    learning_goals: List[str] = Field(default_factory=list, description="学习目标")
+    
+    @validator('cognitive_style')
+    def validate_cognitive_style(cls, v):
+        """验证认知风格"""
+        valid_styles = ["intuitive", "analytical", "reflective", "creative", "balanced"]
+        if v not in valid_styles:
+            raise ValueError(f'认知风格必须是以下之一: {", ".join(valid_styles)}')
+        return v
+    
+    class Config:
+        schema_extra = {
+            "example": {
+                "preferred_spectrum_types": ["red", "blue", "purple"],
+                "preferred_whitespace_duration": {
+                    "integration": 45,
+                    "reflection": 90,
+                    "creative": 120
+                },
+                "cognitive_style": "balanced",
+                "learning_goals": ["提高决策质量", "增强创造性思维"]
+            }
+        }
+
+
+# 缺失的类 - 为兼容性添加
+class WhitespaceConfig(BaseModel):
+    """留白配置"""
+    duration_seconds: int = Field(60, description="留白时长（秒）", ge=10, le=600)
+    enable_integration: bool = Field(True, description="启用整合留白")
+    enable_reflection: bool = Field(True, description="启用反思留白")
+    enable_creation: bool = Field(True, description="启用创造留白")
+    
+    class Config:
+        schema_extra = {
+            "example": {
+                "duration_seconds": 60,
+                "enable_integration": True,
+                "enable_reflection": True,
+                "enable_creation": True
+            }
+        }
+
+
+class CeaseSignal(BaseModel):
+    """知止信号配置"""
+    enabled: bool = Field(True, description="启用知止机制")
+    max_recursion_depth: int = Field(5, description="最大递归深度", ge=1, le=20)
+    safety_threshold: float = Field(0.8, description="安全阈值", ge=0.0, le=1.0)
+    
+    class Config:
+        schema_extra = {
+            "example": {
+                "enabled": True,
+                "max_recursion_depth": 5,
+                "safety_threshold": 0.8
+            }
+        }
+
+
+class CognitiveMetadata(BaseModel):
+    """认知元数据"""
+    session_id: str = Field(default_factory=lambda: str(uuid4()), description="会话ID")
+    timestamp: datetime = Field(default_factory=datetime.now, description="时间戳")
+    processing_time_ms: Optional[int] = Field(None, description="处理时间（毫秒）")
+    spectrum_count: int = Field(3, description="光谱数量", ge=3, le=10)
+    
+    class Config:
+        schema_extra = {
+            "example": {
+                "session_id": "session_123",
+                "timestamp": "2026-03-28T10:30:00",
+                "processing_time_ms": 1200,
+                "spectrum_count": 3
+            }
+        }
+
+
+class PrismRequest(BaseModel):
+    """棱镜请求"""
+    message: str = Field(..., description="消息内容", min_length=1, max_length=5000)
+    require_spectrums: int = Field(3, description="需要的光谱数量", ge=3, le=10)
+    whitespace_config: WhitespaceConfig = Field(default_factory=WhitespaceConfig, description="留白配置")
+    cease_config: CeaseSignal = Field(default_factory=CeaseSignal, description="知止配置")
+    cognitive_metadata: Optional[CognitiveMetadata] = Field(None, description="认知元数据")
+    
+    class Config:
+        schema_extra = {
+            "example": {
+                "message": "什么是理解？",
+                "require_spectrums": 3,
+                "whitespace_config": {
+                    "duration_seconds": 60,
+                    "enable_integration": True,
+                    "enable_reflection": True,
+                    "enable_creation": True
+                },
+                "cease_config": {
+                    "enabled": True,
+                    "max_recursion_depth": 5,
+                    "safety_threshold": 0.8
+                }
+            }
+        }
