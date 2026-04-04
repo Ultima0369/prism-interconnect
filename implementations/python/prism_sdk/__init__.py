@@ -250,3 +250,24 @@ __all__ = [
     "generate_code_haiku", "compose_breath_soundscape", 
     "create_cognitive_mirror", "paint_understanding_visual",
 ]
+
+# KAIROS时机感知模块 (v1.0.0)
+from .kairos import (
+    KairosPrismEngine, TrustMatrix, CognitiveMonitor, TimingOracle,
+    KairosMoment, UserCognitiveState, TrustLevel, create_kairos_engine,
+)
+from .awakening_metrics import (
+    AwakeningMetrics, AwakeningIndicator, AwakeningDimension, create_awakening_metrics,
+)
+from .enhanced_exceptions import (
+    KairosError, EthicsViolationError, TrustInsufficientError,
+    DefenseMechanismActiveError, InertiaLockedError, AwakeningMetricsError,
+)
+
+__all__.extend([
+    "KairosPrismEngine", "TrustMatrix", "CognitiveMonitor", "TimingOracle",
+    "KairosMoment", "UserCognitiveState", "TrustLevel", "create_kairos_engine",
+    "AwakeningMetrics", "AwakeningIndicator", "AwakeningDimension", "create_awakening_metrics",
+    "KairosError", "EthicsViolationError", "TrustInsufficientError",
+    "DefenseMechanismActiveError", "InertiaLockedError", "AwakeningMetricsError",
+])
