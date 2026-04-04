@@ -271,3 +271,18 @@ __all__.extend([
     "KairosError", "EthicsViolationError", "TrustInsufficientError",
     "DefenseMechanismActiveError", "InertiaLockedError", "AwakeningMetricsError",
 ])
+
+# 哲学增强模块 (v1.0.0) - 对话洞见的技术实现
+from .philosophy_enhanced import (
+    TemporalMode, ControlState, AbundanceState, IntersectionType,
+    TemporalRhythm, IntersectionPoint, VoidState, AbundanceProfile,
+    EcologicalRationality, PhilosophyEnhancedEngine,
+    create_philosophy_engine, create_void_state,
+)
+
+__all__.extend([
+    "TemporalMode", "ControlState", "AbundanceState", "IntersectionType",
+    "TemporalRhythm", "IntersectionPoint", "VoidState", "AbundanceProfile",
+    "EcologicalRationality", "PhilosophyEnhancedEngine",
+    "create_philosophy_engine", "create_void_state",
+])
